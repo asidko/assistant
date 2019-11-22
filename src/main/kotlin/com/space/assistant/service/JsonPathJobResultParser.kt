@@ -23,5 +23,5 @@ class JsonPathJobResultParser : JobResultParser {
     }
 
     private fun canParse(jobResult: JobResult): Boolean =
-            jobResult.jobInfo.parseType == JobResultParseType.JSON_PATH
+            jobResult.jobInfo.resultParseType == JobResultParseType.JSON_PATH
 }

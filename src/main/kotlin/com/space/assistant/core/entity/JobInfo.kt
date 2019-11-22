@@ -10,7 +10,7 @@ class JobInfo(
         val execValue: String = "",
         val resultParseType: String = JobResultParseType.PLAIN_TEXT,
         val resultParseValue: String = "",
-        val sayResult: Boolean = false
+        val shouldSayResult: Boolean = false
 )
 
 object JobParseType {

@@ -1,9 +1,8 @@
 package com.space.assistant.service.listener
 
-import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.event.JobRawResultProvidedEvent
+import com.space.assistant.core.event.JobFinalResultProvidedEvent
 import com.space.assistant.core.service.JobResultParser
-import com.space.assistant.core.service.JobRunner
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationEventPublisher
@@ -19,7 +18,11 @@ class JobRawResultProvidedEventListener(
     fun handleEvent(event: JobRawResultProvidedEvent) {
         for (parser in jobResultParsers) {
             GlobalScope.launch {
-                parser.parseResult(event.jobResult)
+                val resultMono = parser.parseResult(event.jobResult)
+
+                resultMono
+                        .map { JobFinalResultProvidedEvent(it) }
+                        .subscribe { eventPublisher.publishEvent(it) }
             }
         }
     }
