@@ -7,11 +7,9 @@ object JobResultParseType {
     const val JSON_PATH = "JSON_PATH"
 }
 
-class PlainTextJobResultParseInfo : JobResultParseInfo {
-    override val type: String = JobResultParseType.PLAIN_TEXT
-}
+data class PlainTextJobResultParseInfo(override val type: String = JobResultParseType.PLAIN_TEXT) : JobResultParseInfo
 
-class JsonPathJobResultParseInfo(
+data class JsonPathJobResultParseInfo(
         val jsonPathValues: List<String>,
         val resultFormatString: String
 ) : JobResultParseInfo {

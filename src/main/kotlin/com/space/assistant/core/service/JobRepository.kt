@@ -5,4 +5,5 @@ import com.space.assistant.core.entity.Phrase
 
 interface JobRepository {
     fun findJobByPhrase(phrase: Phrase): JobInfo?
+    fun findJobByUuid(uuid: String): JobInfo?
 }

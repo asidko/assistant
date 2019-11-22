@@ -3,7 +3,7 @@ package com.space.assistant.core.entity
 import JobResultParseInfo
 import java.util.*
 
-class JobInfo(
+data class JobInfo(
         val uuid: String = UUID.randomUUID().toString(),
         val searchInfo: JobSearchInfo,
         val execInfo: JobExecInfo,

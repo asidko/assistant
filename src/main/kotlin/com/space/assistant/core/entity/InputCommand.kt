@@ -4,7 +4,7 @@ import java.util.*
 
 typealias Phrase = List<String>
 
-class InputCommand(
+data class InputCommand(
         val uuid: String = UUID.randomUUID().toString(),
         val phrase: Phrase = emptyList(),
         val alternativePhrases: List<Phrase> = emptyList()
@@ -12,9 +12,9 @@ class InputCommand(
     companion object
 }
 
-class CommandAlternative(
+data class CommandAlternative(
         val uuid: String = UUID.randomUUID().toString(),
-        val inputCommandUUID: UUID,
+        val inputCommandUUID: String,
         val alternativePhrase: Phrase
 )
 

@@ -14,20 +14,15 @@ class JustSayJobRunner(
         private val speakService: SpeakService
 ) : JobRunner {
 
-    override fun runJob(jobInfo: JobInfo): Mono<JobResult> {
+    override fun runJob(jobInfo: JobInfo, previousJobResult: JobResult?): Mono<JobResult> {
         if (!canRun(jobInfo)) return Mono.empty()
 
-        val text = sayText(jobInfo)
+        val text = previousJobResult?.result ?: (jobInfo.execInfo as JustSayJobExecInfo).text
+        speakService.say(text)
 
         return Mono.just(JobResult(text, jobInfo))
     }
 
-    private fun sayText(jobInfo: JobInfo): String {
-        val text = (jobInfo.execInfo as JustSayJobExecInfo).text
-        speakService.say(text)
-
-        return text
-    }
 
     private fun canRun(jobInfo: JobInfo) = jobInfo.execInfo.type == JobExecType.JUST_SAY
 }

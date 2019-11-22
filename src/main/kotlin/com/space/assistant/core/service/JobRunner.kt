@@ -5,5 +5,5 @@ import com.space.assistant.core.entity.JobResult
 import reactor.core.publisher.Mono
 
 interface JobRunner {
-    fun runJob(jobInfo: JobInfo): Mono<JobResult>
+    fun runJob(jobInfo: JobInfo, previousJobResult: JobResult?): Mono<JobResult>
 }

@@ -15,11 +15,11 @@ class RequestJobRunner(
         private val objectMapper: ObjectMapper
 ) : JobRunner {
 
-    override fun runJob(jobInfo: JobInfo): Mono<JobResult> {
+    override fun runJob(jobInfo: JobInfo, previousJobResult: JobResult?): Mono<JobResult> {
         if (!canRun(jobInfo)) return Mono.empty()
 
         return Mono.create {
-            val url = (jobInfo.execInfo as RequestJobExecInfo).url
+            val url = previousJobResult?.result ?: (jobInfo.execInfo as RequestJobExecInfo).url
             val json = sendRequest(url)
             val result = JobResult(json, jobInfo)
 

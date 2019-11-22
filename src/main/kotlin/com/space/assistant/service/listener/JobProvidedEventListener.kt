@@ -7,7 +7,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,7 +18,7 @@ class JobProvidedEventListener(
     fun handleEvent(event: JobProvidedEvent) {
         for (runner in jobRunners) {
             GlobalScope.launch {
-                val jobResultMono = runner.runJob(event.job)
+                val jobResultMono = runner.runJob(event.job, event.previousJobResult)
 
                 jobResultMono
                         .map { jobResult -> JobRawResultProvidedEvent(jobResult) }

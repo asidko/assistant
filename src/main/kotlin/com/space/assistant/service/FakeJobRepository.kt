@@ -16,6 +16,10 @@ class FakeJobRepository : JobRepository {
                 .find { (it.searchInfo as DirectMatchJobSearchInfo).text == phraseText }
     }
 
+    override fun findJobByUuid(uuid: String): JobInfo? {
+        return jobs.find { it.uuid == uuid }
+    }
+
     private val jobs = listOf(
             JobInfo(
                     uuid = "SAY_HELLO",

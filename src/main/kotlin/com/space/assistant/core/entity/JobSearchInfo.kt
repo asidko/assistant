@@ -9,8 +9,8 @@ object JobParseType {
     const val DIRECT_MATCH = "DIRECT_MATCH"
 }
 
-class EmptyJobSearchInfo(override val type: String = JobParseType.NONE) : JobSearchInfo
+data class EmptyJobSearchInfo(override val type: String = JobParseType.NONE) : JobSearchInfo
 
-class DirectMatchJobSearchInfo(val text: String) : JobSearchInfo {
+data class DirectMatchJobSearchInfo(val text: String) : JobSearchInfo {
     override val type: String = JobParseType.DIRECT_MATCH
 }

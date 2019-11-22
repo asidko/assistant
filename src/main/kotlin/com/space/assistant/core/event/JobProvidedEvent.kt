@@ -1,5 +1,6 @@
 package com.space.assistant.core.event
 
 import com.space.assistant.core.entity.JobInfo
+import com.space.assistant.core.entity.JobResult
 
-class JobProvidedEvent (val job: JobInfo)
+data class JobProvidedEvent(val job: JobInfo, val previousJobResult: JobResult?)

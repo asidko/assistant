@@ -13,4 +13,7 @@ class RepositoryJobProvider(
 
     override fun findJob(command: CommandAlternative): JobInfo? =
             jobRepository.findJobByPhrase(command.alternativePhrase)
+
+    override fun findJob(uuid: String): JobInfo? =
+            jobRepository.findJobByUuid(uuid)
 }
