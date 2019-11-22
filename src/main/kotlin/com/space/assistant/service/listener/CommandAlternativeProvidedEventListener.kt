@@ -9,8 +9,9 @@ import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
+@Service
 class CommandAlternativeProvidedEventListener(
         private val jobProviders: List<JobProvider>,
         private val eventPublisher: ApplicationEventPublisher) {

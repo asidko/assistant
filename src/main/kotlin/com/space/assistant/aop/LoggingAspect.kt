@@ -28,6 +28,7 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
      */
     @Pointcut("within(@org.springframework.stereotype.Repository *)" +
             " || within(@org.springframework.stereotype.Service *)" +
+            " || within(@org.springframework.stereotype.Component *)" +
             " || within(@org.springframework.web.bind.annotation.RestController *)")
     fun springBeanPointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
@@ -65,7 +66,7 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
     fun logAround(joinPoint: ProceedingJoinPoint): Any? {
         if (log.isDebugEnabled) {
             val arguments = joinPoint.args.joinToString(", ") { convertResultToString(it) }
-            log.debug("⮡ Enter: {}.{}() with arguments = {}",
+            log.debug("⮡ Enter  {}.{}() with arguments = {}",
                     joinPoint.signature.declaringTypeName.prettifyClassName(),
                     joinPoint.signature.name.prettifyMethodName(),
                     arguments)
@@ -75,12 +76,12 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
             if (log.isDebugEnabled) {
                 val returnType = (joinPoint.signature as MethodSignature).returnType
                 if (returnType.name != "void") {
-                    log.debug("⮤ Exit:  {}.{}() with result = {}",
+                    log.debug("⮤ Exit   {}.{}() with result = {}",
                             joinPoint.signature.declaringTypeName.prettifyClassName(),
                             joinPoint.signature.name.prettifyMethodName(),
                             convertResultToString(result))
                 } else {
-                    log.debug("⮤ Exit:  {}.{}()",
+                    log.debug("⮤ Exit   {}.{}()",
                             joinPoint.signature.declaringTypeName.prettifyClassName(),
                             joinPoint.signature.name.prettifyMethodName())
                 }
@@ -88,7 +89,7 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
             return result
         } catch (e: IllegalArgumentException) {
             val arguments = joinPoint.args.joinToString(", ") { objectMapper.writeValueAsString(it) }
-            log.error("↯ Illegal argument: {} in {}.{}()",
+            log.error("↯ Illegal argument {} in {}.{}()",
                     arguments,
                     joinPoint.signature.declaringTypeName.prettifyClassName(),
                     joinPoint.signature.name.prettifyMethodName())
@@ -97,13 +98,11 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
 
     }
 
-    private fun convertResultToString(result: Any?): String {
-        return when (result) {
-            null -> AnsiConstants.GRAY + "empty or null" + AnsiConstants.RESET
-            is Mono<*> -> AnsiConstants.YELLOW + result.metrics().toString() + AnsiConstants.RESET
-            is String -> AnsiConstants.GREEN + result + AnsiConstants.RESET
-            else -> AnsiConstants.YELLOW + objectMapper.writeValueAsString(result) + AnsiConstants.RESET
-        }
+    private fun convertResultToString(result: Any?): String = when (result) {
+        null -> AnsiConstants.GRAY + "NULL" + AnsiConstants.RESET
+        is Mono<*> -> AnsiConstants.YELLOW + result.metrics().toString() + AnsiConstants.RESET
+        is String -> AnsiConstants.GREEN + result + AnsiConstants.RESET
+        else -> AnsiConstants.YELLOW + objectMapper.writeValueAsString(result) + AnsiConstants.RESET
     }
 
     private fun String.prettifyClassName(): String =

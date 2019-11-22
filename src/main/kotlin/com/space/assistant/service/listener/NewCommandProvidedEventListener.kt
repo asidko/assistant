@@ -7,9 +7,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
+@Service
 class NewCommandProvidedEventListener(
         private val commandAlternativeProviders: List<CommandAlternativeProvider>,
         private val eventPublisher: ApplicationEventPublisher) {

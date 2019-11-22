@@ -9,8 +9,9 @@ import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
+@Service
 class JobFinalResultProvidedEventListener(
         private val speakService: SpeakService,
         private val eventPublisher: ApplicationEventPublisher) {
