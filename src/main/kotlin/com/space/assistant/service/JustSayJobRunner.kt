@@ -1,8 +1,9 @@
 package com.space.assistant.service
 
-import JustSayJobExecInfo
+import com.space.assistant.core.entity.JobExecType
 import com.space.assistant.core.entity.JobInfo
 import com.space.assistant.core.entity.JobResult
+import com.space.assistant.core.entity.JustSayJobExecInfo
 import com.space.assistant.core.service.JobRunner
 import com.space.assistant.core.service.SpeakService
 import org.springframework.stereotype.Service

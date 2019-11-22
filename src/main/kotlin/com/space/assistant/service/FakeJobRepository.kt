@@ -1,8 +1,6 @@
 package com.space.assistant.service
 
-import RequestJobExecInfo
 import JsonPathJobResultParseInfo
-import JustSayJobExecInfo
 import PlainTextJobResultParseInfo
 import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobRepository
@@ -20,16 +18,25 @@ class FakeJobRepository : JobRepository {
 
     private val jobs = listOf(
             JobInfo(
-                    searchInfo = DirectMatchJobSearchInfo("hello"),
-                    execInfo = JustSayJobExecInfo("Hello world"),
+                    uuid = "SAY_HELLO",
+                    searchInfo = DirectMatchJobSearchInfo(text = "hello"),
+                    execInfo = JustSayJobExecInfo(text = "Hello world"),
                     resultParseInfo = PlainTextJobResultParseInfo()
             ),
             JobInfo(
-                    searchInfo = DirectMatchJobSearchInfo("weather"),
-                    execInfo = RequestJobExecInfo("https://www.metaweather.com/api/location/924938/"),
+                    uuid = "SAY_TEXT",
+                    searchInfo = EmptyJobSearchInfo(),
+                    execInfo = JustSayJobExecInfo(text = ""),
+                    resultParseInfo = PlainTextJobResultParseInfo()
+            ),
+            JobInfo(
+                    uuid = "SAY_THE_WEATHER",
+                    searchInfo = DirectMatchJobSearchInfo(text = "weather"),
+                    execInfo = RequestJobExecInfo(url = "https://www.metaweather.com/api/location/924938/"),
                     resultParseInfo = JsonPathJobResultParseInfo(
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
-                            resultFormatString = "Current temperature is $1 degrees")
+                            resultFormatString = "Current temperature is $1 degrees"),
+                    redirectToJobs = listOf("SAY_TEXT")
             )
     )
 

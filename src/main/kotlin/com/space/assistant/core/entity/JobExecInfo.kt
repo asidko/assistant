@@ -1,3 +1,4 @@
+package com.space.assistant.core.entity
 
 interface JobExecInfo {
     val type: String

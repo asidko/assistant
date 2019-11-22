@@ -5,15 +5,15 @@ import java.util.*
 typealias Phrase = List<String>
 
 class InputCommand(
-        val uuid: UUID = UUID.randomUUID(),
+        val uuid: String = UUID.randomUUID().toString(),
         val phrase: Phrase = emptyList(),
         val alternativePhrases: List<Phrase> = emptyList()
 ) {
-    companion object {}
+    companion object
 }
 
 class CommandAlternative(
-        val uuid: UUID = UUID.randomUUID(),
+        val uuid: String = UUID.randomUUID().toString(),
         val inputCommandUUID: UUID,
         val alternativePhrase: Phrase
 )
