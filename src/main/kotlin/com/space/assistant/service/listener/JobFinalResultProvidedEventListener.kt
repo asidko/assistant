@@ -19,12 +19,9 @@ class JobFinalResultProvidedEventListener(
     @EventListener
     fun handleEvent(event: JobFinalResultProvidedEvent) {
             val jobResult = event.jobResult
-            if (shouldSay(jobResult)) say(jobResult)
     }
 
-    private fun say(jobResult: JobResult) = speakService.say(jobResult.result)
 
-    private fun shouldSay(jobResult: JobResult) = jobResult.jobInfo.shouldSayResult
 
 }
 

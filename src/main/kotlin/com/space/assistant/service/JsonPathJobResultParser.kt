@@ -1,8 +1,9 @@
 package com.space.assistant.service
 
+import JsonPathJobResultParseInfo
+import com.fasterxml.jackson.databind.JsonNode
 import com.jayway.jsonpath.JsonPath
 import com.space.assistant.core.entity.JobResult
-import com.space.assistant.core.entity.JobResultParseType
 import com.space.assistant.core.service.JobResultParser
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -15,13 +16,25 @@ class JsonPathJobResultParser : JobResultParser {
 
         return Mono.create {
             val json = jobRawResult.result
-            val parseResult = JsonPath.parse(json)
-            val result = parseResult.toString()
+            val jsonPathList = getJsonPathValues(jobRawResult)
+            val resultFormatString = getResultFormatString(jobRawResult)
 
-            it.success(JobResult(result, jobRawResult.jobInfo))
+            val jsonPathValues = jsonPathList.map { path -> JsonPath.read<Any>(json, path) }
+
+            var resultString = resultFormatString
+            for (i in 0..jsonPathValues.lastIndex)
+                resultString = resultString.replace("$${i+1}", jsonPathValues[i].toString())
+
+            it.success(JobResult(resultString, jobRawResult.jobInfo))
         }
     }
 
+    private fun getJsonPathValues(jobRawResult: JobResult) =
+            (jobRawResult.jobInfo.resultParseInfo as JsonPathJobResultParseInfo).jsonPathValues
+
+    private fun getResultFormatString(jobRawResult: JobResult) =
+            (jobRawResult.jobInfo.resultParseInfo as JsonPathJobResultParseInfo).resultFormatString
+
     private fun canParse(jobResult: JobResult): Boolean =
-            jobResult.jobInfo.resultParseType == JobResultParseType.JSON_PATH
+            jobResult.jobInfo.resultParseInfo.type == JobResultParseType.JSON_PATH
 }

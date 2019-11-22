@@ -1,6 +1,6 @@
 package com.space.assistant.service
 
-import com.space.assistant.core.entity.JobExecType
+import JustSayJobExecInfo
 import com.space.assistant.core.entity.JobInfo
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.JobRunner
@@ -16,11 +16,17 @@ class JustSayJobRunner(
     override fun runJob(jobInfo: JobInfo): Mono<JobResult> {
         if (!canRun(jobInfo)) return Mono.empty()
 
-        val textToSay = jobInfo.execValue.ifEmpty { jobInfo.parseValue }
-        speakService.say(textToSay)
+        val text = sayText(jobInfo)
 
-        return Mono.just(JobResult(textToSay, jobInfo))
+        return Mono.just(JobResult(text, jobInfo))
     }
 
-    private fun canRun(jobInfo: JobInfo) = jobInfo.execType == JobExecType.JUST_SAY
+    private fun sayText(jobInfo: JobInfo): String {
+        val text = (jobInfo.execInfo as JustSayJobExecInfo).text
+        speakService.say(text)
+
+        return text
+    }
+
+    private fun canRun(jobInfo: JobInfo) = jobInfo.execInfo.type == JobExecType.JUST_SAY
 }

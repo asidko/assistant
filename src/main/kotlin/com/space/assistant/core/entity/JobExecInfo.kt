@@ -1,0 +1,17 @@
+
+interface JobExecInfo {
+    val type: String
+}
+
+object JobExecType {
+    const val REQUEST = "REQUEST"
+    const val JUST_SAY = "JUST_SAY"
+}
+
+class RequestJobExecInfo(val url: String) : JobExecInfo {
+    override val type: String = JobExecType.REQUEST
+}
+
+class JustSayJobExecInfo(val text: String) : JobExecInfo {
+    override val type: String = JobExecType.JUST_SAY
+}
