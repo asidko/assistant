@@ -4,12 +4,11 @@ import java.util.*
 
 class JobInfo(
         val uuid: UUID = UUID.randomUUID(),
-        val parseType: String = JobParseType.DIRECT_MATCH,
-        val parseValue: String = "",
-        val execType: String = JobExecType.NONE,
-        val execValue: String = "",
-        val resultParseType: String = JobResultParseType.PLAIN_TEXT,
-        val resultParseValue: String = "",
+        val parseInfo: JobParseInfo,
+        val execType: String,
+        val execValue: String,
+        val resultParseType: String,
+        val resultParseValue: String,
         val shouldSayResult: Boolean = false
 )
 

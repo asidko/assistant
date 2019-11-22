@@ -14,18 +14,17 @@ class FakeJobRepository : JobRepository {
 
     private val jobs = listOf(
             JobInfo(
-                    parseType = JobParseType.DIRECT_MATCH,
-                    parseValue = "hello",
+                    parseInfo = DirectMatchJobParseInfo("hello"),
                     execType = JobExecType.JUST_SAY,
                     execValue = "Hello world"
             ),
             JobInfo(
-                    parseType = JobParseType.DIRECT_MATCH,
-                    parseValue = "weather",
+                    parseInfo = DirectMatchJobParseInfo("weather"),
                     execType = JobExecType.GET_REQUEST,
                     execValue = "https://www.metaweather.com/api/location/924938/",
                     resultParseType = JobResultParseType.JSON_PATH,
-                    resultParseValue = "\$.consolidated_weather[0].the_temp"
+                    resultParseArgs = "\$.consolidated_weather[0].the_temp",
+                    shouldSayResult = true
             )
     )
 }
