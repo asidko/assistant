@@ -8,9 +8,10 @@ import org.aspectj.lang.annotation.AfterThrowing
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
+import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.LoggerFactory
-import org.springframework.core.env.Environment
-import java.util.*
+import reactor.core.publisher.Mono
+
 
 /**
  * Aspect for logging execution of service and repository Spring components.
@@ -21,7 +22,7 @@ import java.util.*
 class LoggingAspect(private val objectMapper: ObjectMapper) {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
-
+    private val basePackageName = "com.space.assistant"
     /**
      * Pointcut that matches all repositories, services and Web REST endpoints.
      */
@@ -63,30 +64,71 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
     @Throws(Throwable::class)
     fun logAround(joinPoint: ProceedingJoinPoint): Any? {
         if (log.isDebugEnabled) {
-            val arguments = joinPoint.args.joinToString(", ") { objectMapper.writeValueAsString(it) }
-            log.debug("Enter: {}.{}() with argument[s] = {}",
-                    joinPoint.signature.declaringTypeName,
-                    joinPoint.signature.name,
+            val arguments = joinPoint.args.joinToString(", ") { convertResultToString(it) }
+            log.debug("⮡ Enter: {}.{}() with arguments = {}",
+                    joinPoint.signature.declaringTypeName.prettifyClassName(),
+                    joinPoint.signature.name.prettifyMethodName(),
                     arguments)
         }
         try {
             val result = joinPoint.proceed()
-            if (log.isDebugEnabled)
-                log.debug("Exit: {}.{}() with result = {}",
-                        joinPoint.signature.declaringTypeName,
-                        joinPoint.signature.name,
-                        convertResultToString(result))
+            if (log.isDebugEnabled) {
+                val returnType = (joinPoint.signature as MethodSignature).returnType
+                if (returnType.name != "void") {
+                    log.debug("⮤ Exit:  {}.{}() with result = {}",
+                            joinPoint.signature.declaringTypeName.prettifyClassName(),
+                            joinPoint.signature.name.prettifyMethodName(),
+                            convertResultToString(result))
+                } else {
+                    log.debug("⮤ Exit:  {}.{}()",
+                            joinPoint.signature.declaringTypeName.prettifyClassName(),
+                            joinPoint.signature.name.prettifyMethodName())
+                }
+            }
             return result
         } catch (e: IllegalArgumentException) {
             val arguments = joinPoint.args.joinToString(", ") { objectMapper.writeValueAsString(it) }
-            log.error("Illegal argument: {} in {}.{}()",
+            log.error("↯ Illegal argument: {} in {}.{}()",
                     arguments,
-                    joinPoint.signature.declaringTypeName,
-                    joinPoint.signature.name)
+                    joinPoint.signature.declaringTypeName.prettifyClassName(),
+                    joinPoint.signature.name.prettifyMethodName())
             throw e
         }
 
     }
 
-    private fun convertResultToString(result: Any?) = objectMapper.writeValueAsString(result)
+    private fun convertResultToString(result: Any?): String {
+        return when (result) {
+            null -> AnsiConstants.GRAY + "empty or null" + AnsiConstants.RESET
+            is Mono<*> -> AnsiConstants.YELLOW + result.metrics().toString() + AnsiConstants.RESET
+            is String -> AnsiConstants.GREEN + result + AnsiConstants.RESET
+            else -> AnsiConstants.YELLOW + objectMapper.writeValueAsString(result) + AnsiConstants.RESET
+        }
+    }
+
+    private fun String.prettifyClassName(): String =
+            this.removePrefix("$basePackageName.")
+                    .let { fullClassName ->
+                        val shortClassNameIndex = fullClassName.indexOfLast { it == '.' }
+                        fullClassName.substring(0, shortClassNameIndex) +
+                                AnsiConstants.PURPLE +
+                                fullClassName.substring(shortClassNameIndex, fullClassName.length) +
+                                AnsiConstants.RESET
+                    }
+
+    private fun String.prettifyMethodName(): String =
+            this.let { AnsiConstants.BLUE + it + AnsiConstants.RESET }
+
+    object AnsiConstants {
+        val RESET = "\u001B[0m"
+        val BLACK = "\u001B[30m"
+        val RED = "\u001B[31m"
+        val GREEN = "\u001B[32m"
+        val YELLOW = "\u001B[33m"
+        val BLUE = "\u001B[34m"
+        val PURPLE = "\u001B[35m"
+        val CYAN = "\u001B[36m"
+        val GRAY = "\u001B[37m"
+        val WHITE = "\u001B[37;1m"
+    }
 }
