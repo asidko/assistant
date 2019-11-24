@@ -4,13 +4,13 @@ interface JobSearchInfo {
     val type: String
 }
 
-object JobParseType {
-    const val NONE = "NONE"
+object JobSearchType {
+    const val EMPTY = "EMPTY"
     const val DIRECT_MATCH = "DIRECT_MATCH"
 }
 
-data class EmptyJobSearchInfo(override val type: String = JobParseType.NONE) : JobSearchInfo
+data class EmptyJobSearchInfo(override val type: String = JobSearchType.EMPTY) : JobSearchInfo
 
 data class DirectMatchJobSearchInfo(val text: String) : JobSearchInfo {
-    override val type: String = JobParseType.DIRECT_MATCH
+    override val type: String = JobSearchType.DIRECT_MATCH
 }

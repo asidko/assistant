@@ -12,7 +12,7 @@ class FakeJobRepository : JobRepository {
     override fun findJobByPhrase(phrase: Phrase): JobInfo? {
         val phraseText = phrase.joinToString(" ")
         return jobs
-                .filter { it.searchInfo.type == JobParseType.DIRECT_MATCH }
+                .filter { it.searchInfo.type == JobSearchType.DIRECT_MATCH }
                 .find { (it.searchInfo as DirectMatchJobSearchInfo).text == phraseText }
     }
 
