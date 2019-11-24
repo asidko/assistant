@@ -1,7 +1,7 @@
-package com.space.assistant.service
+package com.space.assistant.service.parser
 
+import JobResultParseType
 import JsonPathJobResultParseInfo
-import com.fasterxml.jackson.databind.JsonNode
 import com.jayway.jsonpath.JsonPath
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.JobResultParser
@@ -25,7 +25,7 @@ class JsonPathJobResultParser : JobResultParser {
             for (i in 0..jsonPathValues.lastIndex)
                 resultString = resultString.replace("$${i+1}", jsonPathValues[i].toString())
 
-            it.success(JobResult(resultString, jobRawResult.jobInfo))
+            it.success(jobRawResult.copy(result = resultString))
         }
     }
 

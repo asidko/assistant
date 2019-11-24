@@ -3,11 +3,11 @@ interface JobResultParseInfo {
 }
 
 object JobResultParseType {
-    const val PLAIN_TEXT = "PLAIN_TEXT"
+    const val EMPTY = "PLAIN_TEXT"
     const val JSON_PATH = "JSON_PATH"
 }
 
-data class PlainTextJobResultParseInfo(override val type: String = JobResultParseType.PLAIN_TEXT) : JobResultParseInfo
+data class EmptyJobResultParseInfo(override val type: String = JobResultParseType.EMPTY) : JobResultParseInfo
 
 data class JsonPathJobResultParseInfo(
         val jsonPathValues: List<String>,

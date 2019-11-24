@@ -1,4 +1,4 @@
-package com.space.assistant.service
+package com.space.assistant.service.runner
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.space.assistant.core.entity.JobExecType
@@ -21,7 +21,8 @@ class RequestJobRunner(
         return Mono.create {
             val url = previousJobResult?.result ?: (jobInfo.execInfo as RequestJobExecInfo).url
             val json = sendRequest(url)
-            val result = JobResult(json, jobInfo)
+            val result = previousJobResult?.copy(result = json)
+                    ?: JobResult.new(json, jobInfo)
 
             it.success(result)
         }

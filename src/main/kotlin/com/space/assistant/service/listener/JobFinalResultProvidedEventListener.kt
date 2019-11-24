@@ -1,6 +1,5 @@
 package com.space.assistant.service.listener
 
-import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.event.JobFinalResultProvidedEvent
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.service.JobProvider
@@ -21,10 +20,12 @@ class JobFinalResultProvidedEventListener(
         val currentJobResult = event.jobResult
         log.debug("Current job result is {}", currentJobResult)
 
-        val currentJobRedirects = currentJobResult.jobInfo.redirectToJobs
-        log.debug("Current job redirects is {}", currentJobRedirects)
+        val currentJobResultRedirects = currentJobResult.redirectToJobs
+        val currentJobPresetRedirects = currentJobResult.jobInfo.redirectToJobs
+        val allJobRedirects = currentJobPresetRedirects + currentJobResultRedirects
+        log.debug("Current job preset redirects is {}", currentJobPresetRedirects)
+        log.debug("Current job result redirects is {}", currentJobResultRedirects)
 
-        val allJobRedirects = currentJobRedirects + currentJobResult.redirectToJobs
         log.debug("All job redirects is {}", allJobRedirects)
         if (allJobRedirects.isEmpty()) {
             log.debug("There is no more redirects. Return.")
@@ -38,10 +39,7 @@ class JobFinalResultProvidedEventListener(
         log.debug("Found next job {}", nextJob)
 
         val otherJobRedirects = allJobRedirects.subList(1, allJobRedirects.size)
-        val jobResultForNext = JobResult(
-                result = currentJobResult.result,
-                jobInfo = currentJobResult.jobInfo,
-                redirectToJobs = otherJobRedirects)
+        val jobResultForNext = currentJobResult.copy(jobInfo = nextJob, redirectToJobs = otherJobRedirects)
 
         val nextJobEvent = JobProvidedEvent(nextJob, jobResultForNext)
         log.debug("Publishing event for next job {}", nextJobEvent)

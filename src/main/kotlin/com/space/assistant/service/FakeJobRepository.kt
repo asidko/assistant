@@ -1,7 +1,7 @@
 package com.space.assistant.service
 
+import EmptyJobResultParseInfo
 import JsonPathJobResultParseInfo
-import PlainTextJobResultParseInfo
 import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobRepository
 import org.springframework.stereotype.Service
@@ -25,13 +25,13 @@ class FakeJobRepository : JobRepository {
                     uuid = "SAY_HELLO",
                     searchInfo = DirectMatchJobSearchInfo(text = "hello"),
                     execInfo = JustSayJobExecInfo(text = "Hello world"),
-                    resultParseInfo = PlainTextJobResultParseInfo()
+                    resultParseInfo = EmptyJobResultParseInfo()
             ),
             JobInfo(
                     uuid = "SAY_TEXT",
                     searchInfo = EmptyJobSearchInfo(),
                     execInfo = JustSayJobExecInfo(text = ""),
-                    resultParseInfo = PlainTextJobResultParseInfo()
+                    resultParseInfo = EmptyJobResultParseInfo()
             ),
             JobInfo(
                     uuid = "SAY_THE_WEATHER",
@@ -40,6 +40,13 @@ class FakeJobRepository : JobRepository {
                     resultParseInfo = JsonPathJobResultParseInfo(
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
                             resultFormatString = "Current temperature is $1 degrees"),
+                    redirectToJobs = listOf("SAY_TEXT")
+            ),
+            JobInfo(
+                    uuid = "RUN_CHROME",
+                    searchInfo = DirectMatchJobSearchInfo(text = "chrome"),
+                    execInfo = WinCmdJobExecInfo(cmd = "chrome.exe"),
+                    resultParseInfo = EmptyJobResultParseInfo(),
                     redirectToJobs = listOf("SAY_TEXT")
             )
     )
