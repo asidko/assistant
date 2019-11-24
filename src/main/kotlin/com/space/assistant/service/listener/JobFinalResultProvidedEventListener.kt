@@ -20,28 +20,26 @@ class JobFinalResultProvidedEventListener(
         val currentJobResult = event.jobResult
         log.debug("Current job result is {}", currentJobResult)
 
-        val currentJobResultRedirects = currentJobResult.redirectToJobs
-        val currentJobPresetRedirects = currentJobResult.jobInfo.redirectToJobs
-        val allJobRedirects = currentJobPresetRedirects + currentJobResultRedirects
-        log.debug("Current job preset redirects is {}", currentJobPresetRedirects)
-        log.debug("Current job result redirects is {}", currentJobResultRedirects)
+        val redirectsFromJobResult = currentJobResult.redirectToJobs
+        log.debug("Redirects from job result is {}", redirectsFromJobResult)
+        val redirectsFromJobInfo = currentJobResult.jobInfo.redirectToJobs
+        log.debug("Redirects from job info is {}", redirectsFromJobInfo)
 
-        log.debug("All job redirects is {}", allJobRedirects)
-        if (allJobRedirects.isEmpty()) {
+        val joinedRedirects = redirectsFromJobInfo + redirectsFromJobResult
+        if (joinedRedirects.isEmpty()) {
             log.debug("There is no more redirects. Return.")
             return
         }
 
-        val nextJobUuid = allJobRedirects.first()
+        val nextJobUuid = joinedRedirects.first()
         log.debug("Looking for next job with uuid {}", nextJobUuid)
-
         val nextJob = jobProvider.findJob(nextJobUuid) ?: return
         log.debug("Found next job {}", nextJob)
 
-        val otherJobRedirects = allJobRedirects.subList(1, allJobRedirects.size)
-        val jobResultForNext = currentJobResult.copy(jobInfo = nextJob, redirectToJobs = otherJobRedirects)
-
+        val remainingRedirects = joinedRedirects.subList(1, joinedRedirects.size)
+        val jobResultForNext = currentJobResult.copy(jobInfo = nextJob, redirectToJobs = remainingRedirects)
         val nextJobEvent = JobProvidedEvent(nextJob, jobResultForNext)
+
         log.debug("Publishing event for next job {}", nextJobEvent)
         eventPublisher.publishEvent(nextJobEvent)
     }
