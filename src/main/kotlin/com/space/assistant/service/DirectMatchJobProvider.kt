@@ -7,13 +7,10 @@ import com.space.assistant.core.service.JobRepository
 import org.springframework.stereotype.Service
 
 @Service
-class RepositoryJobProvider(
+class DirectMatchJobProvider(
         private val jobRepository: JobRepository
 ) : JobProvider {
 
     override fun findJob(command: CommandAlternative): JobInfo? =
             jobRepository.findJobByPhrase(command.alternativePhrase)
-
-    override fun findJob(uuid: String): JobInfo? =
-            jobRepository.findJobByUuid(uuid)
 }

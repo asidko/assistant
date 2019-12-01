@@ -20,6 +20,10 @@ class FakeJobRepository : JobRepository {
         return jobs.find { it.uuid == uuid }
     }
 
+    override fun findJobsBySearchType(searchType: String): List<JobInfo> {
+        return jobs.filter { it.searchInfo.type == searchType }
+    }
+
     private val jobs = listOf(
             JobInfo(
                     uuid = "SAY_HELLO",
@@ -48,6 +52,12 @@ class FakeJobRepository : JobRepository {
                     execInfo = WinCmdJobExecInfo(cmd = "chrome.exe"),
                     resultParseInfo = EmptyJobResultParseInfo(),
                     redirectToJobs = listOf("SAY_TEXT")
+            ),
+            JobInfo(
+                    uuid = "GOOGLE_SEARCH",
+                    searchInfo = WildcardJobSearchInfo(text = "найти *"),
+                    execInfo = JustSayJobExecInfo(text = ""),
+                    resultParseInfo = EmptyJobResultParseInfo()
             )
     )
 

@@ -5,5 +5,4 @@ import com.space.assistant.core.entity.JobInfo
 
 interface JobProvider {
     fun findJob(command: CommandAlternative): JobInfo?
-    fun findJob(uuid: String): JobInfo?
 }
