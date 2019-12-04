@@ -23,11 +23,12 @@ class WildcardJobProvider(
         for (job in allWildcardJobs) {
             if (job.searchInfo is WildcardJobSearchInfo) {
                 val wildcardText = job.searchInfo.text
-                val wildcardIndex = wildcardText.indexOf("*")
-                val prefix = wildcardText.substring(0, wildcardIndex)
-                val suffix = wildcardText.subSequence(wildcardIndex + 1, wildcardText.length)
+                val wildcardRegexp = wildcardText
+                        .map { if (it != '*') "\\" + it else "(.+?)" }
+                        .joinToString("")
 
-                val isJobFound = phraseText.startsWith(prefix) && phraseText.endsWith(suffix)
+                val isJobFound = Regex(wildcardRegexp).matches(phraseText)
+
                 if (isJobFound) return job
             }
         }
