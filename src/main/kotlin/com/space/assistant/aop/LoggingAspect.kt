@@ -66,7 +66,7 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
     fun logAround(joinPoint: ProceedingJoinPoint): Any? {
         if (log.isDebugEnabled) {
             val arguments = joinPoint.args.joinToString(", ") { convertResultToString(it) }
-            log.debug("⮡ Enter  {}.{}() with arguments = {}",
+            log.debug("⮡ Enter {}.{}() with arguments = {}",
                     joinPoint.signature.declaringTypeName.prettifyClassName(),
                     joinPoint.signature.name.prettifyMethodName(),
                     arguments)
@@ -76,7 +76,7 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
             if (log.isDebugEnabled) {
                 val returnType = (joinPoint.signature as MethodSignature).returnType
                 if (returnType.name != "void") {
-                    log.debug("⮤ Exit   {}.{}() with result = {}",
+                    log.debug("⮤ Exit {}.{}() with result = {}",
                             joinPoint.signature.declaringTypeName.prettifyClassName(),
                             joinPoint.signature.name.prettifyMethodName(),
                             convertResultToString(result))
