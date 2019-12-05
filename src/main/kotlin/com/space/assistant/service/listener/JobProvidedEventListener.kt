@@ -1,5 +1,6 @@
 package com.space.assistant.service.listener
 
+import com.space.assistant.core.entity.RunJobInfo
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.event.JobRawResultProvidedEvent
 import com.space.assistant.core.service.JobRunner
@@ -18,7 +19,8 @@ class JobProvidedEventListener(
     fun handleEvent(event: JobProvidedEvent) {
         for (runner in jobRunners) {
             GlobalScope.launch {
-                val jobResultMono = runner.runJob(event.job, event.previousJobResult)
+                val runJobInfo = RunJobInfo(event.job, event.previousJobResult)
+                val jobResultMono = runner.runJob(runJobInfo)
 
                 jobResultMono
                         .map { jobResult -> JobRawResultProvidedEvent(jobResult) }

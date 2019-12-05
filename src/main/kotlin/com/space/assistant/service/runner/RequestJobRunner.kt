@@ -1,10 +1,7 @@
 package com.space.assistant.service.runner
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.space.assistant.core.entity.JobExecType
-import com.space.assistant.core.entity.JobInfo
-import com.space.assistant.core.entity.JobResult
-import com.space.assistant.core.entity.RequestJobExecInfo
+import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobRunner
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -15,14 +12,14 @@ class RequestJobRunner(
         private val objectMapper: ObjectMapper
 ) : JobRunner {
 
-    override fun runJob(jobInfo: JobInfo, previousJobResult: JobResult?): Mono<JobResult> {
-        if (!canRun(jobInfo)) return Mono.empty()
+    override fun runJob(runJobInfo: RunJobInfo): Mono<JobResult> {
+        if (!canRun(runJobInfo.jobInfo)) return Mono.empty()
 
         return Mono.create {
-            val url = previousJobResult?.result ?: (jobInfo.execInfo as RequestJobExecInfo).url
+            val url = runJobInfo.previousJobResult?.result ?: (runJobInfo.jobInfo.execInfo as RequestJobExecInfo).url
             val json = sendRequest(url)
-            val result = previousJobResult?.copy(result = json)
-                    ?: JobResult.new(json, jobInfo)
+            val result = runJobInfo.previousJobResult?.copy(result = json)
+                    ?: JobResult.new(json, runJobInfo.jobInfo)
 
             it.success(result)
         }
