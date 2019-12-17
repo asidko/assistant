@@ -19,11 +19,11 @@ class JobProvidedEventListener(
     fun handleEvent(event: JobProvidedEvent) {
         for (runner in jobRunners) {
             GlobalScope.launch {
-                val runJobInfo = RunJobInfo(event.job, event.previousJobResult)
+                val runJobInfo = RunJobInfo(event.job, event.command, event.previousJobResult)
                 val jobResultMono = runner.runJob(runJobInfo)
 
                 jobResultMono
-                        .map { jobResult -> JobRawResultProvidedEvent(jobResult) }
+                        .map { jobResult -> JobRawResultProvidedEvent(jobResult, event.command) }
                         .subscribe { event -> eventPublisher.publishEvent(event) }
             }
         }

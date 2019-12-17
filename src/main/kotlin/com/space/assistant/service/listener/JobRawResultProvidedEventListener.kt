@@ -1,13 +1,12 @@
 package com.space.assistant.service.listener
 
-import com.space.assistant.core.event.JobRawResultProvidedEvent
 import com.space.assistant.core.event.JobFinalResultProvidedEvent
+import com.space.assistant.core.event.JobRawResultProvidedEvent
 import com.space.assistant.core.service.JobResultParser
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 
 @Service
@@ -22,7 +21,7 @@ class JobRawResultProvidedEventListener(
                 val resultMono = parser.parseResult(event.jobResult)
 
                 resultMono
-                        .map { JobFinalResultProvidedEvent(it) }
+                        .map { JobFinalResultProvidedEvent(it, event.command) }
                         .subscribe { eventPublisher.publishEvent(it) }
             }
         }

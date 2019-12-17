@@ -8,5 +8,5 @@ data class JobInfo(
         val searchInfo: JobSearchInfo,
         val execInfo: JobExecInfo,
         val resultParseInfo: JobResultParseInfo,
-        val redirectToJobs: List<String> = emptyList()
+        val redirectToJobs: List<String>
 )

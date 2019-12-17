@@ -9,6 +9,7 @@ object JobExecType {
     const val WIN_CMD = "WIN_CMD"
     const val REQUEST = "REQUEST"
     const val JUST_SAY = "JUST_SAY"
+    const val WILDCARD = "WILDCARD"
 }
 
 data class EmptyJobExecInfo(override val type: String = JobExecType.EMPTY) : JobExecInfo
@@ -23,4 +24,9 @@ data class JustSayJobExecInfo(val text: String) : JobExecInfo {
 
 data class WinCmdJobExecInfo(val cmd: String) : JobExecInfo {
     override val type: String = JobExecType.WIN_CMD
+}
+
+data class WildcardJobExecInfo(val text: String = "",
+                               val expression: String = "") : JobExecInfo {
+    override val type: String = JobExecType.WILDCARD
 }

@@ -20,7 +20,7 @@ class CommandAlternativeProvidedEventListener(
             GlobalScope.launch {
                 val job = provider.findJob(event.command)
                 if (job != null)
-                    eventPublisher.publishEvent(JobProvidedEvent(job, null))
+                    eventPublisher.publishEvent(JobProvidedEvent(job, event.command, null))
             }
         }
     }

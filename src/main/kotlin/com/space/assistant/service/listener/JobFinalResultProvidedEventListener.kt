@@ -38,7 +38,7 @@ class JobFinalResultProvidedEventListener(
 
         val remainingRedirects = joinedRedirects.subList(1, joinedRedirects.size)
         val jobResultForNext = currentJobResult.copy(jobInfo = nextJob, redirectToJobs = remainingRedirects)
-        val nextJobEvent = JobProvidedEvent(nextJob, jobResultForNext)
+        val nextJobEvent = JobProvidedEvent(nextJob, event.command, jobResultForNext)
 
         log.debug("Publishing event for next job {}", nextJobEvent)
         eventPublisher.publishEvent(nextJobEvent)

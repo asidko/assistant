@@ -29,13 +29,15 @@ class FakeJobRepository : JobRepository {
                     uuid = "SAY_HELLO",
                     searchInfo = DirectMatchJobSearchInfo(text = "hello"),
                     execInfo = JustSayJobExecInfo(text = "Hello world"),
-                    resultParseInfo = EmptyJobResultParseInfo()
+                    resultParseInfo = EmptyJobResultParseInfo(),
+                    redirectToJobs = emptyList()
             ),
             JobInfo(
                     uuid = "SAY_TEXT",
                     searchInfo = EmptyJobSearchInfo(),
                     execInfo = JustSayJobExecInfo(text = ""),
-                    resultParseInfo = EmptyJobResultParseInfo()
+                    resultParseInfo = EmptyJobResultParseInfo(),
+                    redirectToJobs = emptyList()
             ),
             JobInfo(
                     uuid = "SAY_THE_WEATHER",
@@ -54,10 +56,18 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = listOf("SAY_TEXT")
             ),
             JobInfo(
-                    uuid = "GOOGLE_SEARCH",
+                    uuid = "GOOGLE_SEARCH_1",
                     searchInfo = WildcardJobSearchInfo(text = "найти *"),
-                    execInfo = JustSayJobExecInfo(text = ""),
-                    resultParseInfo = EmptyJobResultParseInfo()
+                    execInfo = WildcardJobExecInfo(expression = "https://www.google.com/search?q=$1"),
+                    resultParseInfo = EmptyJobResultParseInfo(),
+                    redirectToJobs = listOf("GOOGLE_SEARCH_2")
+            ),
+            JobInfo(
+                    uuid = "GOOGLE_SEARCH_2",
+                    searchInfo = EmptyJobSearchInfo(),
+                    execInfo = WinCmdJobExecInfo(cmd = ""),
+                    resultParseInfo = EmptyJobResultParseInfo(),
+                    redirectToJobs = emptyList()
             )
     )
 
