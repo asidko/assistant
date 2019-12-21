@@ -1,4 +1,4 @@
-package com.space.assistant.service
+package com.space.assistant.service.search
 
 import com.space.assistant.core.entity.CommandAlternative
 import com.space.assistant.core.entity.JobInfo
