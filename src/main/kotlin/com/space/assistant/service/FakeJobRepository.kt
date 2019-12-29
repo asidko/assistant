@@ -68,7 +68,15 @@ class FakeJobRepository : JobRepository {
                     execInfo = WinCmdJobExecInfo(cmd = ""),
                     resultParseInfo = EmptyJobResultParseInfo(),
                     redirectToJobs = emptyList()
+            ),
+            JobInfo(
+                    uuid = "VOLUME_UP",
+                    searchInfo = DirectMatchJobSearchInfo("volume up"),
+                    execInfo = PowerShellJobExecInfo(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
+                    resultParseInfo = EmptyJobResultParseInfo(),
+                    redirectToJobs = emptyList()
             )
+
     )
 
 }
