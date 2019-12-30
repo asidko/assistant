@@ -11,7 +11,7 @@ class AssistantApplication
 
 fun main(args: Array<String>) {
 	runApplication<AssistantApplication>(*args)
-	printBanner();
+	printBanner()
 }
 
 fun printBanner() {

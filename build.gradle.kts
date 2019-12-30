@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+	implementation("com.google.cloud:google-cloud-texttospeech:0.117.1-beta")
 	implementation("com.jayway.jsonpath:json-path")
 	implementation("com.profesorfalken:jPowerShell:3.1.1")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
