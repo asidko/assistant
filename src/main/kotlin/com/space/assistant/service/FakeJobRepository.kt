@@ -45,7 +45,7 @@ class FakeJobRepository : JobRepository {
                     execInfo = RequestJobExecInfo(url = "https://www.metaweather.com/api/location/924938/"),
                     resultParseInfo = JsonPathJobResultParseInfo(
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
-                            resultFormatString = "Current temperature is $1 degrees"),
+                            resultFormatString = "Текущая температура $1 градусов"),
                     redirectToJobs = listOf("SAY_TEXT")
             ),
             JobInfo(
