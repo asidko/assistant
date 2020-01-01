@@ -40,8 +40,8 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = emptyList()
             ),
             JobInfo(
-                    uuid = "SAY_THE_WEATHER",
-                    searchInfo = DirectMatchJobSearchInfo(text = "weather"),
+                    uuid = "SAY_WEATHER",
+                    searchInfo = DirectMatchJobSearchInfo(text = "погода"),
                     execInfo = RequestJobExecInfo(url = "https://www.metaweather.com/api/location/924938/"),
                     resultParseInfo = JsonPathJobResultParseInfo(
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
@@ -50,22 +50,15 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "RUN_CHROME",
-                    searchInfo = DirectMatchJobSearchInfo(text = "chrome"),
-                    execInfo = WinCmdJobExecInfo(cmd = "chrome.exe"),
+                    searchInfo = DirectMatchJobSearchInfo(text = "включи радио"),
+                    execInfo = WinCmdJobExecInfo(cmd = "http://www.hitfm.ua/player/"),
                     resultParseInfo = EmptyJobResultParseInfo(),
-                    redirectToJobs = listOf("SAY_TEXT")
+                    redirectToJobs = emptyList()
             ),
             JobInfo(
-                    uuid = "GOOGLE_SEARCH_1",
+                    uuid = "GOOGLE_SEARCH",
                     searchInfo = WildcardJobSearchInfo(text = "найти *"),
                     execInfo = WildcardJobExecInfo(expression = "https://www.google.com/search?q=$1"),
-                    resultParseInfo = EmptyJobResultParseInfo(),
-                    redirectToJobs = listOf("GOOGLE_SEARCH_2")
-            ),
-            JobInfo(
-                    uuid = "GOOGLE_SEARCH_2",
-                    searchInfo = EmptyJobSearchInfo(),
-                    execInfo = WinCmdJobExecInfo(cmd = ""),
                     resultParseInfo = EmptyJobResultParseInfo(),
                     redirectToJobs = emptyList()
             ),
