@@ -10,6 +10,7 @@ class FakeSpeakService(
 ) : SpeakService {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
+    @Synchronized
     override fun say(text: String) {
         log.info("Speaking: $text")
         googleSpeech.say(text)

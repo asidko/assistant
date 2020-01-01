@@ -3,6 +3,7 @@ package com.space.assistant.service.listener
 import com.space.assistant.core.event.CommandAlternativeProvidedEvent
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.service.JobProvider
+import com.space.assistant.core.service.SpeakService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationEventPublisher
@@ -12,15 +13,19 @@ import org.springframework.stereotype.Service
 @Service
 class CommandAlternativeProvidedEventListener(
         private val jobProviders: List<JobProvider>,
-        private val eventPublisher: ApplicationEventPublisher) {
+        private val eventPublisher: ApplicationEventPublisher,
+        private val speakService: SpeakService) {
 
     @EventListener
     fun handleEvent(event: CommandAlternativeProvidedEvent) {
         for (provider in jobProviders) {
             GlobalScope.launch {
                 val job = provider.findJob(event.command)
-                if (job != null)
+                if (job != null) {
                     eventPublisher.publishEvent(JobProvidedEvent(job, event.command, null))
+                    if (job.preExecPhrase.isNotEmpty())
+                        speakService.say(job.preExecPhrase.random())
+                }
             }
         }
     }
