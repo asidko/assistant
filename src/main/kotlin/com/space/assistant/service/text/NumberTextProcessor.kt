@@ -8,7 +8,7 @@ import kotlin.math.roundToInt
 @Suppress("NestedLambdaShadowedImplicitParameter")
 @Service
 class NumberTextProcessor : StringProcessor {
-    private val decimalNumberRegex = "-?\\d*\\.?\\d+".toRegex()
+    private val decimalNumberRegex = "-?\\d*\\.\\d+".toRegex()
 
     override fun apply(text: String) = text.replace(decimalNumberRegex) {
         it.value

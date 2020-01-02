@@ -6,6 +6,7 @@ interface JobExecInfo {
 
 object JobExecType {
     const val EMPTY = "EMPTY"
+    const val PLUGIN = "PLUGIN"
     const val WIN_CMD = "WIN_CMD"
     const val REQUEST = "REQUEST"
     const val JUST_SAY = "JUST_SAY"
@@ -14,6 +15,10 @@ object JobExecType {
 }
 
 data class EmptyJobExecInfo(override val type: String = JobExecType.EMPTY) : JobExecInfo
+
+data class PluginJobExecInfo(val name: String) : JobExecInfo {
+    override val type: String = JobExecType.PLUGIN
+}
 
 data class RequestJobExecInfo(val url: String) : JobExecInfo {
     override val type: String = JobExecType.REQUEST

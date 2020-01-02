@@ -2,6 +2,7 @@ package com.space.assistant.service
 
 import EmptyJobResultParseInfo
 import JsonPathJobResultParseInfo
+import PatternStringResultParseInfo
 import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobRepository
 import org.springframework.stereotype.Service
@@ -74,6 +75,14 @@ class FakeJobRepository : JobRepository {
                     execInfo = PowerShellJobExecInfo(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
                     resultParseInfo = EmptyJobResultParseInfo(),
                     redirectToJobs = emptyList()
+            ),
+            JobInfo(
+                    uuid = "TIME",
+                    searchInfo = DirectMatchJobSearchInfo("время"),
+                    preExecPhrase = emptyList(),
+                    execInfo = PluginJobExecInfo(name = "TimePlugin"),
+                    resultParseInfo = PatternStringResultParseInfo(text = "Текущее время $1"),
+                    redirectToJobs = listOf("SAY_TEXT")
             )
 
     )

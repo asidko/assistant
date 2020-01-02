@@ -5,14 +5,13 @@ import JsonPathJobResultParseInfo
 import com.jayway.jsonpath.JsonPath
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.JobResultParser
-import com.space.assistant.core.service.StringProcessor
-import com.space.assistant.service.applyAsPipe
+import com.space.assistant.service.PatternStringReplacer
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
 class JsonPathJobResultParser(
-        val stringProcessors: List<StringProcessor>
+        val patternStringReplacer: PatternStringReplacer
 ) : JobResultParser {
 
     override fun parseResult(jobRawResult: JobResult): Mono<JobResult> {
@@ -25,12 +24,7 @@ class JsonPathJobResultParser(
 
             val jsonPathValues = jsonPathList.map { path -> JsonPath.read<Any>(json, path) }
 
-            var resultString = resultFormatString
-            for (i in 0..jsonPathValues.lastIndex)
-                resultString = resultString.replace("$${i + 1}", jsonPathValues[i].toString())
-
-            resultString = stringProcessors.applyAsPipe(resultString)
-
+            val resultString = patternStringReplacer.replacePattern(resultFormatString, jsonPathValues)
 
             it.success(jobRawResult.copy(result = resultString))
         }
