@@ -1,5 +1,5 @@
 package com.space.assistant.core.service
 
-interface StringProcessor {
-    fun process(text: String): String
-}
+import java.util.function.Function
+
+interface StringProcessor : Function<String, String>

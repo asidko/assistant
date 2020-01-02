@@ -6,6 +6,7 @@ import com.jayway.jsonpath.JsonPath
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.JobResultParser
 import com.space.assistant.core.service.StringProcessor
+import com.space.assistant.service.applyAsPipe
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
@@ -28,7 +29,7 @@ class JsonPathJobResultParser(
             for (i in 0..jsonPathValues.lastIndex)
                 resultString = resultString.replace("$${i + 1}", jsonPathValues[i].toString())
 
-            resultString = stringProcessors.fold(resultString, { text, processor -> processor.process(text) })
+            resultString = stringProcessors.applyAsPipe(resultString)
 
 
             it.success(jobRawResult.copy(result = resultString))

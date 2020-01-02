@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 class NumberTextProcessor : StringProcessor {
     private val decimalNumberRegex = "-?\\d*\\.?\\d+".toRegex()
 
-    override fun process(text: String) = text.replace(decimalNumberRegex) {
+    override fun apply(text: String) = text.replace(decimalNumberRegex) {
         it.value
                 // Round to 2 decimals
                 .let { ((it.toFloat() * 100).roundToInt() / 100.0).toString() }

@@ -3,6 +3,7 @@ package com.space.assistant.core.entity
 import java.util.*
 
 typealias Phrase = List<String>
+private val spaceRegex = "\\s".toRegex()
 
 data class InputCommand(
         val uuid: String = UUID.randomUUID().toString(),
@@ -18,4 +19,6 @@ data class CommandAlternative(
         val alternativePhrase: Phrase
 )
 
-fun InputCommand.Companion.fromText(text: String) = InputCommand(phrase = text.split("\\s"))
+fun InputCommand.Companion.fromText(text: String): InputCommand {
+    return InputCommand(phrase = text.split(spaceRegex))
+}
