@@ -53,6 +53,14 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = listOf("SAY_TEXT")
             ),
             JobInfo(
+                    uuid = "TIME",
+                    searchInfo = DirectMatchJobSearchInfo("время"),
+                    preExecPhrase = emptyList(),
+                    execInfo = PluginJobExecInfo(name = "TimePlugin"),
+                    resultParseInfo = PatternStringResultParseInfo(text = "Текущее время $1"),
+                    redirectToJobs = listOf("SAY_TEXT")
+            ),
+            JobInfo(
                     uuid = "RUN_CHROME",
                     searchInfo = DirectMatchJobSearchInfo(text = "включи радио"),
                     preExecPhrase = listOf("включаю", "открываю", "запускаю", "сейчас будет"),
@@ -75,14 +83,6 @@ class FakeJobRepository : JobRepository {
                     execInfo = PowerShellJobExecInfo(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
                     resultParseInfo = EmptyJobResultParseInfo(),
                     redirectToJobs = emptyList()
-            ),
-            JobInfo(
-                    uuid = "TIME",
-                    searchInfo = DirectMatchJobSearchInfo("время"),
-                    preExecPhrase = emptyList(),
-                    execInfo = PluginJobExecInfo(name = "TimePlugin"),
-                    resultParseInfo = PatternStringResultParseInfo(text = "Текущее время $1"),
-                    redirectToJobs = listOf("SAY_TEXT")
             )
 
     )
