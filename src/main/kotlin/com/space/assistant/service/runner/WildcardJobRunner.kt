@@ -10,34 +10,35 @@ class WildcardJobRunner : JobRunner {
 
     val expressionVariableRegex = "\\$\\d+".toRegex()
 
-    override fun runJob(runJobInfo: RunJobInfo): Mono<JobResult> {
-        if (!canRun(runJobInfo.jobInfo)) return Mono.empty()
+    override fun runJob(activeJobInfo: ActiveJobInfo): Mono<JobResult> {
+        if (!canRun(activeJobInfo)) return Mono.empty()
+
+        val commandText = activeJobInfo.prevActiveJobInfo?.jobResult?.value
+                ?: activeJobInfo.commandAlternativeSucceed?.alternativePhrase?.joinToString(" ")
+                ?: return Mono.empty()
+
 
         return Mono.create { mono ->
 
-            val wildcardPattern = (runJobInfo.jobInfo.execInfo as WildcardJobExecInfo).text
-                    .ifEmpty { (runJobInfo.jobInfo.searchInfo as? WildcardJobSearchInfo)?.text ?: "" }
+            val execInfoText = (activeJobInfo.jobInfo?.execInfo as? WildcardJobExecInfo)?.text ?: ""
+            val execInfoExpression = (activeJobInfo.jobInfo?.execInfo as? WildcardJobExecInfo)?.expression ?: ""
+            val searchInfoText = (activeJobInfo.jobInfo?.searchInfo as? WildcardJobSearchInfo)?.text ?: ""
+
+            val wildcardPattern = execInfoText.ifEmpty { searchInfoText }
 
             val wildcardRegex = wildcardPattern
                     .map { escapeCharForRegexp(it) }
                     .joinToString("")
                     .toRegex()
 
-            val commandText = runJobInfo.previousJobResult?.result
-                    ?: runJobInfo.command.alternativePhrase.joinToString(" ")
-
             val args = findRegexGroupValues(wildcardRegex, commandText) ?: emptyList()
 
-            val resultExpression = runJobInfo.jobInfo.execInfo.expression
 
-            val resultString = if (resultExpression.isNotEmpty())
-                replaceVariablesByArgs(resultExpression, args)
-            else
-                args.joinToString(",")
+            val resultString =
+                    if (execInfoExpression.isNotEmpty()) replaceVariablesByArgs(execInfoExpression, args)
+                    else args.joinToString(",")
 
-            val result = runJobInfo.previousJobResult?.copy(result = resultString)
-                    ?: JobResult.new(resultString, runJobInfo.jobInfo)
-
+            val result = JobResult(resultString)
             mono.success(result)
         }
     }
@@ -57,5 +58,5 @@ class WildcardJobRunner : JobRunner {
             if (it != '*') "\\$it" else "(.+)"
 
 
-    private fun canRun(jobInfo: JobInfo) = jobInfo.execInfo.type == JobExecType.WILDCARD
+    private fun canRun(activeJobInfo: ActiveJobInfo) = activeJobInfo.jobInfo?.execInfo?.type == JobExecType.WILDCARD
 }

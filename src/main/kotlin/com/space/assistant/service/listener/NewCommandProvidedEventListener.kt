@@ -2,6 +2,7 @@ package com.space.assistant.service.listener
 
 import com.space.assistant.core.event.CommandAlternativeProvidedEvent
 import com.space.assistant.core.event.NewCommandProvidedEvent
+import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.CommandAlternativeProvider
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,15 +13,21 @@ import org.springframework.stereotype.Service
 @Service
 class NewCommandProvidedEventListener(
         private val commandAlternativeProviders: List<CommandAlternativeProvider>,
+        private val activeJobManager: ActiveJobManager,
         private val eventPublisher: ApplicationEventPublisher) {
 
     @EventListener
     fun handleEvent(event: NewCommandProvidedEvent) {
         for (provider in commandAlternativeProviders) {
             GlobalScope.launch {
-                val alternatives = provider.getAlternatives(event.command)
-                alternatives
-                        .map(::CommandAlternativeProvidedEvent)
+                var activeJobInfo = event.activeJobInfo
+                val command = activeJobInfo.inputCommand ?: return@launch
+
+                val commandAlternatives = provider.getAlternatives(command)
+                activeJobInfo = activeJobManager.addAlternatives(activeJobInfo, commandAlternatives)
+
+                commandAlternatives
+                        .map { alternative -> CommandAlternativeProvidedEvent(activeJobInfo, alternative) }
                         .forEach { event -> eventPublisher.publishEvent(event) }
             }
         }

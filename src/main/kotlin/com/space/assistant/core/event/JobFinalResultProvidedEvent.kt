@@ -1,6 +1,5 @@
 package com.space.assistant.core.event
 
-import com.space.assistant.core.entity.CommandAlternative
-import com.space.assistant.core.entity.JobResult
+import com.space.assistant.core.entity.ActiveJobInfo
 
-data class JobFinalResultProvidedEvent(val jobResult: JobResult, val command: CommandAlternative)
+data class JobFinalResultProvidedEvent(val activeJobInfo: ActiveJobInfo)

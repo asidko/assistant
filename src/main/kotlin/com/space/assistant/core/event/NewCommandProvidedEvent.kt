@@ -1,5 +1,5 @@
 package com.space.assistant.core.event
 
-import com.space.assistant.core.entity.InputCommand
+import com.space.assistant.core.entity.ActiveJobInfo
 
-data class NewCommandProvidedEvent(val command: InputCommand)
+data class NewCommandProvidedEvent(val activeJobInfo: ActiveJobInfo)

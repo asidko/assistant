@@ -1,8 +1,8 @@
 package com.space.assistant.service.listener
 
-import com.space.assistant.core.entity.RunJobInfo
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.event.JobRawResultProvidedEvent
+import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.JobRunner
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,17 +13,19 @@ import org.springframework.stereotype.Service
 @Service
 class JobProvidedEventListener(
         private val jobRunners: List<JobRunner>,
+        private val activeJobManager: ActiveJobManager,
         private val eventPublisher: ApplicationEventPublisher) {
 
     @EventListener
     fun handleEvent(event: JobProvidedEvent) {
         for (runner in jobRunners) {
             GlobalScope.launch {
-                val runJobInfo = RunJobInfo(event.job, event.command, event.previousJobResult)
-                val jobResultMono = runner.runJob(runJobInfo)
+                val activeJobInfo = event.activeJobInfo
+                val jobResultMono = runner.runJob(activeJobInfo)
 
                 jobResultMono
-                        .map { jobResult -> JobRawResultProvidedEvent(jobResult, event.command) }
+                        .map { jobResult -> activeJobManager.setRawResult(activeJobInfo, jobResult) }
+                        .map { updatedActiveJobInfo -> JobRawResultProvidedEvent(updatedActiveJobInfo) }
                         .subscribe { event -> eventPublisher.publishEvent(event) }
             }
         }

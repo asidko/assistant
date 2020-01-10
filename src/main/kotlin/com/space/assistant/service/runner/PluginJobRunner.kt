@@ -1,6 +1,9 @@
 package com.space.assistant.service.runner
 
-import com.space.assistant.core.entity.*
+import com.space.assistant.core.entity.ActiveJobInfo
+import com.space.assistant.core.entity.JobExecType
+import com.space.assistant.core.entity.JobResult
+import com.space.assistant.core.entity.PluginJobExecInfo
 import com.space.assistant.core.service.InnerPluginJobRunner
 import com.space.assistant.core.service.JobRunner
 import org.slf4j.LoggerFactory
@@ -14,17 +17,15 @@ class PluginJobRunner(
 ) : JobRunner {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    override fun runJob(runJobInfo: RunJobInfo): Mono<JobResult> {
-        if (!canRun(runJobInfo.jobInfo)) return Mono.empty()
+    override fun runJob(activeJobInfo: ActiveJobInfo): Mono<JobResult> {
+        if (!canRun(activeJobInfo)) return Mono.empty()
 
-        val name = (runJobInfo.jobInfo.execInfo as PluginJobExecInfo).name
+        val name = (activeJobInfo.jobInfo?.execInfo as? PluginJobExecInfo)?.name ?: ""
 
         val pluginRunner = getInnerPluginJobRunner(name) ?: return Mono.empty()
 
-        return pluginRunner.runJob(runJobInfo).map { pluginResult ->
-            runJobInfo.previousJobResult?.copy(result = pluginResult)
-                    ?: JobResult.new(pluginResult, runJobInfo.jobInfo)
-        }
+        return pluginRunner.runJob(activeJobInfo)
+                .map { pluginResult -> JobResult(pluginResult) }
     }
 
     private fun getInnerPluginJobRunner(name: String): InnerPluginJobRunner? {
@@ -36,5 +37,5 @@ class PluginJobRunner(
         }
     }
 
-    private fun canRun(jobInfo: JobInfo) = jobInfo.execInfo.type == JobExecType.PLUGIN
+    private fun canRun(activeJobInfo: ActiveJobInfo) = activeJobInfo.jobInfo?.execInfo?.type == JobExecType.PLUGIN
 }

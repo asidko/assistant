@@ -1,7 +1,10 @@
 package com.space.assistant.service.runner
 
 import com.profesorfalken.jpowershell.PowerShell
-import com.space.assistant.core.entity.*
+import com.space.assistant.core.entity.ActiveJobInfo
+import com.space.assistant.core.entity.JobExecType
+import com.space.assistant.core.entity.JobResult
+import com.space.assistant.core.entity.PowerShellJobExecInfo
 import com.space.assistant.core.service.JobRunner
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -10,21 +13,20 @@ import reactor.core.publisher.Mono
 @Service
 class PowershellJobRunner : JobRunner {
 
-    override fun runJob(runJobInfo: RunJobInfo): Mono<JobResult> {
-        if (!canRun(runJobInfo.jobInfo)) return Mono.empty()
+    override fun runJob(activeJobInfo: ActiveJobInfo): Mono<JobResult> {
+        if (!canRun(activeJobInfo)) return Mono.empty()
 
-        val command = runJobInfo.previousJobResult?.result ?: (runJobInfo.jobInfo.execInfo as PowerShellJobExecInfo).cmd
+        val command = activeJobInfo.prevActiveJobInfo?.jobResult?.value
+                ?: (activeJobInfo.jobInfo?.execInfo as? PowerShellJobExecInfo)?.cmd
+                ?: return Mono.empty()
 
         return Mono.create {
             val shellResponse = PowerShell.openSession().executeCommand(command)
-
-            val result = runJobInfo.previousJobResult?.copy(result = shellResponse.commandOutput)
-                    ?: JobResult.new(shellResponse.commandOutput ?: "", runJobInfo.jobInfo)
-
+            val result = JobResult(shellResponse.commandOutput)
             it.success(result)
         }
     }
 
 
-    private fun canRun(jobInfo: JobInfo) = jobInfo.execInfo.type == JobExecType.POWERSHELL
+    private fun canRun(activeJobInfo: ActiveJobInfo) = activeJobInfo.jobInfo?.execInfo?.type == JobExecType.POWERSHELL
 }

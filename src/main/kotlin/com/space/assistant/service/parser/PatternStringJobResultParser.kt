@@ -2,7 +2,9 @@ package com.space.assistant.service.parser
 
 import JobResultParseType
 import PatternStringResultParseInfo
+import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.JobResult
+import com.space.assistant.core.entity.emptyJobResult
 import com.space.assistant.core.service.JobResultParser
 import com.space.assistant.service.PatternStringReplacer
 import org.springframework.stereotype.Service
@@ -13,20 +15,21 @@ class PatternStringJobResultParser(
         val patternStringReplacer: PatternStringReplacer
 ) : JobResultParser {
 
-    override fun parseResult(jobRawResult: JobResult): Mono<JobResult> {
-        if (!canParse(jobRawResult)) return Mono.empty()
+    override fun parseResult(activeJobInfo: ActiveJobInfo): Mono<JobResult> {
+        if (!canParse(activeJobInfo)) return Mono.empty()
 
         return Mono.create {
-            val args = jobRawResult.result.split(",").map(String::trim)
-            val pattern = (jobRawResult.jobInfo.resultParseInfo as PatternStringResultParseInfo).text
+            val jobRawResult = activeJobInfo.jobRawResult ?: emptyJobResult
+            val args = jobRawResult.value.split(",").map(String::trim)
+            val pattern = (activeJobInfo.jobInfo?.resultParseInfo as? PatternStringResultParseInfo)?.text ?: ""
 
             val resultString = patternStringReplacer.replacePattern(pattern, args)
 
-            it.success(jobRawResult.copy(result = resultString))
+            it.success(jobRawResult.copy(value = resultString))
         }
     }
 
 
-    private fun canParse(jobResult: JobResult): Boolean =
-            jobResult.jobInfo.resultParseInfo.type == JobResultParseType.PATTERN_STRING
+    private fun canParse(activeJobInfo: ActiveJobInfo): Boolean =
+            activeJobInfo.jobInfo?.resultParseInfo?.type == JobResultParseType.PATTERN_STRING
 }

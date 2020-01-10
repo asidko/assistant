@@ -2,6 +2,7 @@ package com.space.assistant.service.listener
 
 import com.space.assistant.core.event.JobFinalResultProvidedEvent
 import com.space.assistant.core.event.JobRawResultProvidedEvent
+import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.JobResultParser
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,17 +13,20 @@ import org.springframework.stereotype.Service
 @Service
 class JobRawResultProvidedEventListener(
         private val jobResultParsers: List<JobResultParser>,
-        private val eventPublisher: ApplicationEventPublisher) {
+        private val eventPublisher: ApplicationEventPublisher,
+        private val activeJobManager: ActiveJobManager) {
 
     @EventListener
     fun handleEvent(event: JobRawResultProvidedEvent) {
         for (parser in jobResultParsers) {
             GlobalScope.launch {
-                val resultMono = parser.parseResult(event.jobResult)
+                val activeJobInfo = event.activeJobInfo
+                val resultMono = parser.parseResult(activeJobInfo)
 
                 resultMono
-                        .map { JobFinalResultProvidedEvent(it, event.command) }
-                        .subscribe { eventPublisher.publishEvent(it) }
+                        .map { jobResult -> activeJobManager.setResult(activeJobInfo, jobResult) }
+                        .map { updatedActiveJobInfo -> JobFinalResultProvidedEvent(updatedActiveJobInfo) }
+                        .subscribe { event -> eventPublisher.publishEvent(event) }
             }
         }
     }
