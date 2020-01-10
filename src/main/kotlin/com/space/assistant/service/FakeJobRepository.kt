@@ -32,7 +32,8 @@ class FakeJobRepository : JobRepository {
                     preExecPhrase = listOf("выполняю"),
                     execInfo = JustSayJobExecInfo(text = "Hello world"),
                     resultParseInfo = EmptyJobResultParseInfo(),
-                    redirectToJobs = emptyList()
+                    redirectToJobs = emptyList(),
+                    postExecPhrase = emptyList()
             ),
             JobInfo(
                     uuid = "SAY_TEXT",
@@ -40,7 +41,8 @@ class FakeJobRepository : JobRepository {
                     preExecPhrase = emptyList(),
                     execInfo = JustSayJobExecInfo(text = ""),
                     resultParseInfo = EmptyJobResultParseInfo(),
-                    redirectToJobs = emptyList()
+                    redirectToJobs = emptyList(),
+                    postExecPhrase = emptyList()
             ),
             JobInfo(
                     uuid = "SAY_WEATHER",
@@ -50,7 +52,8 @@ class FakeJobRepository : JobRepository {
                     resultParseInfo = JsonPathJobResultParseInfo(
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
                             resultFormatString = "Текущая температура $1 градусов"),
-                    redirectToJobs = listOf("SAY_TEXT")
+                    redirectToJobs = listOf("SAY_TEXT"),
+                    postExecPhrase = emptyList()
             ),
             JobInfo(
                     uuid = "TIME",
@@ -58,7 +61,8 @@ class FakeJobRepository : JobRepository {
                     preExecPhrase = emptyList(),
                     execInfo = PluginJobExecInfo(name = "TimePlugin"),
                     resultParseInfo = PatternStringResultParseInfo(text = "Текущее время $1"),
-                    redirectToJobs = listOf("SAY_TEXT")
+                    redirectToJobs = listOf("SAY_TEXT"),
+                    postExecPhrase = emptyList()
             ),
             JobInfo(
                     uuid = "RUN_CHROME",
@@ -66,7 +70,8 @@ class FakeJobRepository : JobRepository {
                     preExecPhrase = listOf("включаю", "открываю", "запускаю", "сейчас будет"),
                     execInfo = WinCmdJobExecInfo(cmd = "http://www.hitfm.ua/player/"),
                     resultParseInfo = EmptyJobResultParseInfo(),
-                    redirectToJobs = emptyList()
+                    redirectToJobs = emptyList(),
+                    postExecPhrase = emptyList()
             ),
             JobInfo(
                     uuid = "GOOGLE_SEARCH",
@@ -74,7 +79,8 @@ class FakeJobRepository : JobRepository {
                     preExecPhrase = listOf("выполняю поиск", "окей, ищу"),
                     execInfo = WildcardJobExecInfo(expression = "https://www.google.com/search?q=$1"),
                     resultParseInfo = EmptyJobResultParseInfo(),
-                    redirectToJobs = emptyList()
+                    redirectToJobs = emptyList(),
+                    postExecPhrase = emptyList()
             ),
             JobInfo(
                     uuid = "VOLUME_UP",
@@ -82,7 +88,8 @@ class FakeJobRepository : JobRepository {
                     preExecPhrase = emptyList(),
                     execInfo = PowerShellJobExecInfo(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
                     resultParseInfo = EmptyJobResultParseInfo(),
-                    redirectToJobs = emptyList()
+                    redirectToJobs = emptyList(),
+                    postExecPhrase = listOf("Звук повышен", "Звук увеличен")
             )
 
     )

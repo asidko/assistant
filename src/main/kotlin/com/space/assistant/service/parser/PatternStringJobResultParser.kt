@@ -4,7 +4,7 @@ import JobResultParseType
 import PatternStringResultParseInfo
 import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.JobResult
-import com.space.assistant.core.entity.emptyJobResult
+import com.space.assistant.core.entity.asArgs
 import com.space.assistant.core.service.JobResultParser
 import com.space.assistant.service.PatternStringReplacer
 import org.springframework.stereotype.Service
@@ -19,13 +19,13 @@ class PatternStringJobResultParser(
         if (!canParse(activeJobInfo)) return Mono.empty()
 
         return Mono.create {
-            val jobRawResult = activeJobInfo.jobRawResult ?: emptyJobResult
-            val args = jobRawResult.value.split(",").map(String::trim)
+            val args = activeJobInfo.jobRawResult?.asArgs()
             val pattern = (activeJobInfo.jobInfo?.resultParseInfo as? PatternStringResultParseInfo)?.text ?: ""
 
             val resultString = patternStringReplacer.replacePattern(pattern, args)
 
-            it.success(jobRawResult.copy(value = resultString))
+            val result = JobResult(resultString)
+            it.success(result)
         }
     }
 

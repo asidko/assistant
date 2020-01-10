@@ -9,5 +9,6 @@ data class JobInfo(
         val preExecPhrase: List<String>,
         val execInfo: JobExecInfo,
         val resultParseInfo: JobResultParseInfo,
+        val postExecPhrase: List<String>,
         val redirectToJobs: List<String>
 )
