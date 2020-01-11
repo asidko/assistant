@@ -90,6 +90,15 @@ class FakeJobRepository : JobRepository {
                     resultParseInfo = EmptyJobResultParseInfo(),
                     redirectToJobs = emptyList(),
                     postExecPhrase = listOf("Звук повышен", "Звук увеличен")
+            ),
+            JobInfo(
+                    uuid = "10_SECONDS",
+                    searchInfo = DirectMatchJobSearchInfo("10 секунд"),
+                    preExecPhrase = listOf("Засекаю 10 секунд", "Отсчитываю 10 секунд", "Таймер на 10 секунд установлен"),
+                    execInfo = TimeDelayJobExecInfo(seconds = "10"),
+                    resultParseInfo = EmptyJobResultParseInfo(),
+                    postExecPhrase = listOf("10 секунд прошло", "Время вышло"),
+                    redirectToJobs = emptyList()
             )
 
     )

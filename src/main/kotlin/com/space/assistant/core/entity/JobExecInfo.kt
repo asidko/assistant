@@ -12,6 +12,7 @@ object JobExecType {
     const val JUST_SAY = "JUST_SAY"
     const val WILDCARD = "WILDCARD"
     const val POWERSHELL = "POWERSHELL"
+    const val TIME_DELAY = "TIME_DELAY"
 }
 
 data class EmptyJobExecInfo(override val type: String = JobExecType.EMPTY) : JobExecInfo
@@ -40,4 +41,9 @@ data class PowerShellJobExecInfo(val cmd: String) : JobExecInfo {
 data class WildcardJobExecInfo(val text: String = "",
                                val expression: String = "") : JobExecInfo {
     override val type: String = JobExecType.WILDCARD
+}
+
+
+data class TimeDelayJobExecInfo(val seconds: String) : JobExecInfo {
+    override val type: String = JobExecType.TIME_DELAY
 }
