@@ -88,7 +88,7 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
             }
             return result
         } catch (e: IllegalArgumentException) {
-            val arguments = joinPoint.args.joinToString(", ") { objectMapper.writeValueAsString(it) }
+            val arguments = joinPoint.args.joinToString(", ") { objectToString(it) }
             log.error("↯ Illegal argument {} in {}.{}()",
                     arguments,
                     joinPoint.signature.declaringTypeName.prettifyClassName(),
@@ -98,11 +98,17 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
 
     }
 
+    private fun objectToString(it: Any?) = try {
+        objectMapper.writeValueAsString(it)
+    } catch (ex: Exception) {
+        it.toString()
+    }
+
     private fun convertResultToString(result: Any?): String = when (result) {
         null -> AnsiConstants.GRAY + "NULL" + AnsiConstants.RESET
         is Mono<*> -> AnsiConstants.YELLOW + result.metrics().toString() + AnsiConstants.RESET
         is String -> AnsiConstants.GREEN + result + AnsiConstants.RESET
-        else -> AnsiConstants.YELLOW + objectMapper.writeValueAsString(result) + AnsiConstants.RESET
+        else -> AnsiConstants.YELLOW + objectToString(result) + AnsiConstants.RESET
     }
 
     private fun String.prettifyClassName(): String =

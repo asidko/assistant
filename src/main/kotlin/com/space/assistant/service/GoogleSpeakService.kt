@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class FakeSpeakService(
+class GoogleSpeakService(
         private val googleSpeech: GoogleSpeechSynthesis
 ) : SpeakService {
     private val log = LoggerFactory.getLogger(this.javaClass)
