@@ -4,9 +4,10 @@ import com.space.assistant.core.event.CommandAlternativeProvidedEvent
 import com.space.assistant.core.event.NewCommandProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.CommandAlternativeProvider
+import com.space.assistant.core.service.EventPublisher
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service
 class NewCommandProvidedEventListener(
         private val commandAlternativeProviders: List<CommandAlternativeProvider>,
         private val activeJobManager: ActiveJobManager,
-        private val eventPublisher: ApplicationEventPublisher) {
+        private val eventPublisher: EventPublisher) {
 
     @EventListener
     fun handleEvent(event: NewCommandProvidedEvent) {
@@ -28,7 +29,7 @@ class NewCommandProvidedEventListener(
 
                 commandAlternatives
                         .map { alternative -> CommandAlternativeProvidedEvent(activeJobInfo, alternative) }
-                        .forEach { event -> eventPublisher.publishEvent(event) }
+                        .forEach { event -> delay(10000); eventPublisher.publishEvent(event) }
             }
         }
     }

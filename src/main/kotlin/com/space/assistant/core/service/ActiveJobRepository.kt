@@ -12,4 +12,5 @@ interface ActiveJobRepository {
     fun setRawResult(activeJobInfo: ActiveJobInfo, result: JobResult?): ActiveJobInfo
     fun setResult(activeJobInfo: ActiveJobInfo, result: JobResult?): ActiveJobInfo
     fun saveActiveJob(activeJobInfo: ActiveJobInfo): ActiveJobInfo
+    fun getActiveJob(activeJobId: String): ActiveJobInfo?
 }

@@ -8,15 +8,15 @@ import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.event.NewCommandProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.ActiveJobRepository
+import com.space.assistant.core.service.EventPublisher
 import com.space.assistant.core.service.InputCommandFilter
 import com.space.assistant.core.util.simpleID
 import org.slf4j.LoggerFactory
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
 @Service
 class ActiveJobManagerImpl(
-        private val eventPublisher: ApplicationEventPublisher,
+        private val eventPublisher: EventPublisher,
         private val filter: InputCommandFilter,
         private val jobRepository: FakeJobRepository,
         private val activeJobRepository: InMemoryActiveJobRepository

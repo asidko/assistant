@@ -59,4 +59,6 @@ class InMemoryActiveJobRepository : ActiveJobRepository {
 
         return updatedActiveJob
     }
+
+    override fun getActiveJob(activeJobId: String) = activeJobs[activeJobId]
 }

@@ -14,7 +14,7 @@ class FakeJobRepository : JobRepository {
         val phraseText = phrase.joinToString(" ")
         return jobs
                 .filter { it.searchInfo.type == JobSearchType.DIRECT_MATCH }
-                .find { (it.searchInfo as DirectMatchJobSearchInfo).text == phraseText }
+                .find { (it.searchInfo as DirectMatchJobSearchInfo).texts.contains(phraseText) }
     }
 
     override fun findJobByUuid(uuid: String): JobInfo? {
@@ -28,7 +28,7 @@ class FakeJobRepository : JobRepository {
     private val jobs = listOf(
             JobInfo(
                     uuid = "SAY_HELLO",
-                    searchInfo = DirectMatchJobSearchInfo(text = "hello"),
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("hello")),
                     preExecPhrase = listOf("выполняю"),
                     execInfo = JustSayJobExecInfo(text = "Hello world"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -46,7 +46,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "SAY_WEATHER",
-                    searchInfo = DirectMatchJobSearchInfo(text = "погода"),
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("погода")),
                     preExecPhrase = listOf("уточняю температуру", "секундочку", "смотрю"),
                     execInfo = RequestJobExecInfo(url = "https://www.metaweather.com/api/location/924938/"),
                     resultParseInfo = JsonPathJobResultParseInfo(
@@ -57,7 +57,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "TIME",
-                    searchInfo = DirectMatchJobSearchInfo("время"),
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("время")),
                     preExecPhrase = emptyList(),
                     execInfo = PluginJobExecInfo(name = "TimePlugin"),
                     resultParseInfo = PatternStringResultParseInfo(text = "Текущее время $1"),
@@ -66,7 +66,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "RUN_CHROME",
-                    searchInfo = DirectMatchJobSearchInfo(text = "включи радио"),
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("включи радио")),
                     preExecPhrase = listOf("включаю", "открываю", "запускаю", "сейчас будет"),
                     execInfo = WinCmdJobExecInfo(cmd = "http://www.hitfm.ua/player/"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -84,7 +84,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "VOLUME_UP",
-                    searchInfo = DirectMatchJobSearchInfo("volume up"),
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("volume up")),
                     preExecPhrase = emptyList(),
                     execInfo = PowerShellJobExecInfo(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -93,11 +93,20 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "10_SECONDS",
-                    searchInfo = DirectMatchJobSearchInfo("10 секунд"),
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("10 секунд")),
                     preExecPhrase = listOf("Засекаю 10 секунд", "Отсчитываю 10 секунд", "Таймер на 10 секунд установлен"),
                     execInfo = TimeDelayJobExecInfo(seconds = "10"),
                     resultParseInfo = EmptyJobResultParseInfo(),
                     postExecPhrase = listOf("10 секунд прошло", "Время вышло"),
+                    redirectToJobs = emptyList()
+            ),
+            JobInfo(
+                    uuid = "CHARLIE",
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("прием", "прийом")),
+                    preExecPhrase = listOf("Слышу вас", "Я здесь", "Я наместе", "Прием, все нормально", "Да-да, слышу", "Все работает, слышу вас"),
+                    execInfo = EmptyJobExecInfo(),
+                    resultParseInfo = EmptyJobResultParseInfo(),
+                    postExecPhrase = listOf(),
                     redirectToJobs = emptyList()
             )
 

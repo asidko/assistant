@@ -3,10 +3,10 @@ package com.space.assistant.service.listener
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.event.JobRawResultProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
+import com.space.assistant.core.service.EventPublisher
 import com.space.assistant.core.service.JobRunner
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 class JobProvidedEventListener(
         private val jobRunners: List<JobRunner>,
         private val activeJobManager: ActiveJobManager,
-        private val eventPublisher: ApplicationEventPublisher) {
+        private val eventPublisher: EventPublisher) {
 
     @EventListener
     fun handleEvent(event: JobProvidedEvent) {

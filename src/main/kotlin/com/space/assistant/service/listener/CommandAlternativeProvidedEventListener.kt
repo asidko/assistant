@@ -3,11 +3,11 @@ package com.space.assistant.service.listener
 import com.space.assistant.core.event.CommandAlternativeProvidedEvent
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
+import com.space.assistant.core.service.EventPublisher
 import com.space.assistant.core.service.JobProvider
 import com.space.assistant.core.service.SpeakService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class CommandAlternativeProvidedEventListener(
         private val jobProviders: List<JobProvider>,
         private val activeJobManager: ActiveJobManager,
-        private val eventPublisher: ApplicationEventPublisher,
+        private val eventPublisher: EventPublisher,
         private val speakService: SpeakService) {
 
     @EventListener

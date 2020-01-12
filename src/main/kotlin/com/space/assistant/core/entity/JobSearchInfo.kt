@@ -12,7 +12,7 @@ object JobSearchType {
 
 data class EmptyJobSearchInfo(override val type: String = JobSearchType.EMPTY) : JobSearchInfo
 
-data class DirectMatchJobSearchInfo(val text: String) : JobSearchInfo {
+data class DirectMatchJobSearchInfo(val texts: List<String>) : JobSearchInfo {
     override val type: String = JobSearchType.DIRECT_MATCH
 }
 

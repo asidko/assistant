@@ -1,5 +1,6 @@
 package com.space.assistant.core.event
 
+import com.space.assistant.core.entity.ActiveJobEvent
 import com.space.assistant.core.entity.ActiveJobInfo
 
-data class JobRawResultProvidedEvent(val activeJobInfo: ActiveJobInfo)
+class JobRawResultProvidedEvent(activeJobInfo: ActiveJobInfo) : ActiveJobEvent(activeJobInfo)
