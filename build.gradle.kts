@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "2.2.1.RELEASE"
 	id("io.spring.dependency-management") version "1.0.8.RELEASE"
+
 	kotlin("jvm") version "1.3.50"
 	kotlin("plugin.spring") version "1.3.50"
 }
@@ -17,6 +18,7 @@ repositories {
 
 dependencies {
 	implementation("com.google.cloud:google-cloud-texttospeech:0.117.1-beta")
+	implementation("com.google.cloud:google-cloud-speech:1.22.1")
 	implementation("com.jayway.jsonpath:json-path")
 	implementation("com.profesorfalken:jPowerShell:3.1.1")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
