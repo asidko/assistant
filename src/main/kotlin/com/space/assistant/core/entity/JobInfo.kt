@@ -1,10 +1,10 @@
 package com.space.assistant.core.entity
 
 import JobResultParseInfo
-import java.util.*
+import com.space.assistant.core.util.simpleID
 
 data class JobInfo(
-        val uuid: String = UUID.randomUUID().toString(),
+        val uuid: String = simpleID(),
         val searchInfo: JobSearchInfo,
         val preExecPhrase: List<String>,
         val execInfo: JobExecInfo,

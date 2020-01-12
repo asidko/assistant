@@ -1,13 +1,13 @@
 package com.space.assistant.core.entity
 
-import java.util.*
+import com.space.assistant.core.util.simpleID
 
 typealias Phrase = List<String>
 
 private val spaceRegex = "\\s".toRegex()
 
 data class InputCommand(
-        val uuid: String = UUID.randomUUID().toString(),
+        val uuid: String = simpleID(),
         val phrase: Phrase = emptyList(),
         val alternativePhrases: List<Phrase> = emptyList()
 ) {
@@ -15,7 +15,7 @@ data class InputCommand(
 }
 
 data class CommandAlternative(
-        val uuid: String = UUID.randomUUID().toString(),
+        val uuid: String = simpleID(),
         val inputCommandUUID: String,
         val alternativePhrase: Phrase
 )
