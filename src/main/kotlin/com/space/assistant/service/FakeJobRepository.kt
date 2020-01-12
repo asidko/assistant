@@ -102,7 +102,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "CHARLIE",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("прием", "прийом")),
+                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("прием", "прийом", "как слышно", "слышишь")),
                     preExecPhrase = listOf("Слышу вас", "Я здесь", "Я наместе", "Прием, все нормально", "Да-да, слышу", "Все работает, слышу вас"),
                     execInfo = EmptyJobExecInfo(),
                     resultParseInfo = EmptyJobResultParseInfo(),
