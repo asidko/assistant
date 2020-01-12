@@ -15,9 +15,11 @@ import javax.sound.sampled.DataLine
 import javax.sound.sampled.TargetDataLine
 import kotlin.math.floor
 
-class GoogleInfiniteStreamRecognize(private val onResultCallback: String.() -> Unit) {
+class GoogleInfiniteStreamRecognize(private val onResultCallback: (List<String>) -> Unit) {
     private val STREAMING_LIMIT = 290000 // ~5 minutes
     private val BYTES_PER_BUFFER = 6400 // buffer size in bytes
+    private val additionalLanguages = listOf("uk-UA")
+    private val maxAlternativeCount = 3
 
     val RED = "\u001b[0;31m"
     val GREEN = "\u001b[0;32m"
@@ -63,6 +65,7 @@ class GoogleInfiniteStreamRecognize(private val onResultCallback: String.() -> U
         )
     }
 
+
     fun infiniteStreamingRecognize(languageCode: String) { // Microphone Input buffering
         class MicBuffer : Runnable {
             override fun run() {
@@ -103,18 +106,21 @@ class GoogleInfiniteStreamRecognize(private val onResultCallback: String.() -> U
                     val resultEndTime = result.resultEndTime
                     resultEndTimeInMS = (resultEndTime.seconds * 1000 + resultEndTime.nanos / 1000000).toInt()
                     val correctedTime = (resultEndTimeInMS - bridgingOffset + STREAMING_LIMIT * restartCounter)
-                    val alternative = result.alternativesList[0]
+                    val alternatives = result.alternativesList
                     if (result.isFinal) {
                         print(GREEN)
                         print("\u001b[2K\r")
-                        print(String.format("%s: %s [confidence: %.2f]\n", convertMillisToDate(correctedTime), alternative.transcript, alternative.confidence))
-                        onResultCallback(alternative.transcript)
+                        for (alternative in alternatives) {
+                            print(String.format("%s: %s [confidence: %.2f]\n", convertMillisToDate(correctedTime), alternative.transcript, alternative.confidence))
+                        }
+                        onResultCallback(alternatives.map { it.transcript })
                         isFinalEndTime = resultEndTimeInMS
                         lastTranscriptWasFinal = true
                     } else {
                         print(RED)
                         print("\u001b[2K\r")
-                        print(String.format("%s: %s", convertMillisToDate(correctedTime), alternative.transcript))
+                        print(String.format("%s: %s", convertMillisToDate(correctedTime), alternatives.firstOrNull()?.transcript
+                                ?: "<no alternative>"))
                         lastTranscriptWasFinal = false
                     }
                 }
@@ -128,6 +134,8 @@ class GoogleInfiniteStreamRecognize(private val onResultCallback: String.() -> U
             val recognitionConfig = RecognitionConfig.newBuilder()
                     .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
                     .setLanguageCode(languageCode)
+                    .addAllAlternativeLanguageCodes(additionalLanguages)
+                    .setMaxAlternatives(maxAlternativeCount)
                     .setSampleRateHertz(16000)
                     .build()
             val streamingRecognitionConfig = StreamingRecognitionConfig.newBuilder()

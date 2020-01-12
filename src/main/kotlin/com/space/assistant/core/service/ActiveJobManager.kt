@@ -4,6 +4,7 @@ import com.space.assistant.core.entity.*
 
 interface ActiveJobManager {
     fun tryNewJob(text: String)
+    fun tryNewJobs(texts: List<String>)
     fun tryNextJob(currentActiveJobInfo: ActiveJobInfo)
     fun registerActiveJob(command: InputCommand): ActiveJobInfo
     fun addAlternatives(activeJobInfo: ActiveJobInfo, commandAlternatives: List<CommandAlternative>): ActiveJobInfo

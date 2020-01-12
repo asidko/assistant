@@ -3,6 +3,7 @@ package com.space.assistant.service
 import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.InputCommand
 import com.space.assistant.core.entity.fromText
+import com.space.assistant.core.entity.fromTexts
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.event.NewCommandProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
@@ -28,7 +29,21 @@ class ActiveJobManagerImpl(
         val command = InputCommand.fromText(text)
 
         val filtered = filter.apply(command)
-        filtered ?: log.debug("Command with text={} was filtered out", text)
+        filtered ?: log.debug("Command with text {} was filtered out", text)
+        filtered ?: return
+
+        val activeJob = registerActiveJob(command)
+
+        eventPublisher.publishEvent(NewCommandProvidedEvent(activeJob))
+    }
+
+    override fun tryNewJobs(texts: List<String>) {
+        if (texts.isEmpty()) return
+        if (texts.size == 1) tryNewJob(texts.first())
+        val command = InputCommand.fromTexts(texts)
+
+        val filtered = filter.apply(command)
+        filtered ?: log.debug("Command with texts {} was filtered out", command.toString())
         filtered ?: return
 
         val activeJob = registerActiveJob(command)

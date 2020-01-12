@@ -16,7 +16,7 @@ class VoiceRecognitionApplicationListener(
     fun onApplicationEvent(event: ApplicationReadyEvent) {
         print("Application started!")
         Thread {
-            voiceRecognitionService.start("ru-RU") { activeJobManager.tryNewJob(it) }
+            voiceRecognitionService.start("ru-RU") { activeJobManager.tryNewJobs(it) }
         }.start()
     }
 }

@@ -3,6 +3,7 @@ package com.space.assistant.core.entity
 import java.util.*
 
 typealias Phrase = List<String>
+
 private val spaceRegex = "\\s".toRegex()
 
 data class InputCommand(
@@ -20,5 +21,15 @@ data class CommandAlternative(
 )
 
 fun InputCommand.Companion.fromText(text: String): InputCommand {
-    return InputCommand(phrase = text.split(spaceRegex))
+    return InputCommand(phrase = tokenizeText(text))
 }
+
+fun InputCommand.Companion.fromTexts(texts: List<String>): InputCommand = when {
+    texts.isEmpty() -> InputCommand.fromText("")
+    texts.size == 1 -> InputCommand.fromText(texts[0])
+    else -> texts
+            .map { tokenizeText(it) }
+            .let { phrases -> InputCommand(phrase = phrases[0], alternativePhrases = phrases.subList(1, phrases.size)) }
+}
+
+private inline fun tokenizeText(text: String): Phrase = text.trim().split(spaceRegex)

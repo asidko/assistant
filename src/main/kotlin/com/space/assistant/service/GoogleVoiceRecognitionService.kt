@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 class GoogleVoiceRecognitionService : VoiceRecognitionService {
     var googleRecognition: GoogleInfiniteStreamRecognize? = null
 
-    override fun start(langCode: String, onResult: (String) -> Unit) {
+    override fun start(langCode: String, onResult: (List<String>) -> Unit) {
         googleRecognition = GoogleInfiniteStreamRecognize(onResult)
         googleRecognition?.start("ru-RU")
     }
