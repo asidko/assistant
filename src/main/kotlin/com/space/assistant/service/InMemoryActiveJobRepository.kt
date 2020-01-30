@@ -7,12 +7,13 @@ import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.ActiveJobRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class InMemoryActiveJobRepository : ActiveJobRepository {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    private val activeJobs: MutableMap<String, ActiveJobInfo> = mutableMapOf()
+    private val activeJobs: MutableMap<String, ActiveJobInfo> = ConcurrentHashMap()
 
     override fun saveActiveJob(activeJobInfo: ActiveJobInfo): ActiveJobInfo {
         activeJobs[activeJobInfo.uuid] = activeJobInfo
