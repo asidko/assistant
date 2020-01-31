@@ -24,6 +24,7 @@ class NewCommandProvidedEventListener(
                 val command = activeJobInfo.inputCommand ?: return@launch
 
                 val commandAlternatives = provider.getAlternatives(command)
+
                 activeJobInfo = activeJobManager.addAlternatives(activeJobInfo, commandAlternatives)
 
                 commandAlternatives

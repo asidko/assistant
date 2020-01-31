@@ -18,13 +18,17 @@ class AssistantNameAlternativeProvider(
     private val containsAssistantName: (Phrase) -> Boolean = { phrase -> props.assistantName in phrase }
 
     override fun getAlternatives(inputCommand: InputCommand): List<CommandAlternative> {
-        val alternativesWithAssistantName = listOf(inputCommand.phrase).filter(containsAssistantName) +
-                inputCommand.alternativePhrases.filter(containsAssistantName)
+        val phrasesWithAssistantName =
+                listOf(inputCommand.phrase).filter(containsAssistantName) +
+                        inputCommand.alternativePhrases.filter(containsAssistantName)
 
-        val alternativesWithRemovedAssistantName = alternativesWithAssistantName
+        if (phrasesWithAssistantName.isNotEmpty())
+            log.debug("Found {} phrases with assistant name. Removing assistant name", phrasesWithAssistantName.size)
+
+        val phrasesWithRemovedAssistantName = phrasesWithAssistantName
                 .map { phrase -> phrase.filter { it != props.assistantName } }
 
-        return alternativesWithRemovedAssistantName.map { phrase ->
+        return phrasesWithRemovedAssistantName.map { phrase ->
             CommandAlternative(
                     inputCommandUUID = inputCommand.uuid,
                     alternativePhrase = phrase)

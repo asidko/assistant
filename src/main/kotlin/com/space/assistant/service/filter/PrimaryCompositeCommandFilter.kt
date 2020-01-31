@@ -12,13 +12,13 @@ class PrimaryCompositeCommandFilter(
         allFilters: List<InputCommandFilter>
 ) : InputCommandFilter {
 
-    private val orders = mapOf(
+    private val priority = mapOf(
             AssistantNameCommandFilter::class to 1
     )
 
     private val filters = allFilters
             .filterNot { it == this }
-            .sortedWith(compareBy { orders[it::class] ?: Integer.MAX_VALUE })
+            .sortedWith(compareBy { priority[it::class] ?: Integer.MAX_VALUE })
 
     override fun apply(command: InputCommand): InputCommand? {
         return filters.applyAsNullablePipe(command)

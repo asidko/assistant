@@ -13,7 +13,8 @@ class DirectCommandAlternativeProvider : CommandAlternativeProvider {
 
     override fun getAlternatives(inputCommand: InputCommand): List<CommandAlternative> {
         val allPhrases = mutableListOf(inputCommand.phrase) + inputCommand.alternativePhrases
-        log.debug("Providing alternatives {}", allPhrases)
+
+        log.debug("Providing direct alternatives: {}", allPhrases)
 
         return allPhrases.map { phrase ->
             CommandAlternative(

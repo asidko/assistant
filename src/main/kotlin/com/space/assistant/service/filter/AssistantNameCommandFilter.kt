@@ -13,10 +13,9 @@ class AssistantNameCommandFilter(
 
     private val containsAssistantName: (Phrase) -> Boolean = { phrase -> props.assistantName in phrase }
 
-    override fun apply(command: InputCommand): InputCommand? {
-         if (!props.shouldCallByName) return command
-        return if (containsAssistantName(command.phrase) ||
-                command.alternativePhrases.any(containsAssistantName)) command
-        else null
+    override fun apply(command: InputCommand): InputCommand? = when {
+        props.shouldCallByName.not() -> command
+        containsAssistantName(command.phrase) || command.alternativePhrases.any(containsAssistantName) -> command
+        else -> null
     }
 }
