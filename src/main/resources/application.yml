@@ -1,5 +1,8 @@
 logging:
   level:
-#    com.space.assistant: DEBUG
+    #    com.space.assistant: DEBUG
     root: DEBUG
     io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler: INFO
+
+server:
+  port: 8000

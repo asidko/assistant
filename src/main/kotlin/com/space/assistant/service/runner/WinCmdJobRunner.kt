@@ -1,31 +1,26 @@
 package com.space.assistant.service.runner
 
 import com.space.assistant.core.entity.ActiveJobInfo
-import com.space.assistant.core.entity.JobExecType
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.entity.WinCmdJobExecInfo
 import com.space.assistant.core.service.JobRunner
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
 
+@Suppress("BlockingMethodInNonBlockingContext")
 @Service
 class WinCmdJobRunner : JobRunner {
 
-    override fun runJob(activeJobInfo: ActiveJobInfo): Mono<JobResult> {
-        if (!canRun(activeJobInfo)) return Mono.empty()
+    override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
+        val execInfo = activeJobInfo.jobInfo?.execInfo as? WinCmdJobExecInfo ?: return null
 
-        val command = activeJobInfo.prevActiveJobInfo?.jobResult?.value
-                ?: (activeJobInfo.jobInfo?.execInfo as? WinCmdJobExecInfo)?.cmd
-                ?: return Mono.empty()
+        val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
+        val command = prevJobResult?.value
+                ?: (execInfo as? WinCmdJobExecInfo)?.cmd
+                ?: return null
 
-        return Mono.create {
-            val process = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler $command")
-            val pid = process.pid().toString()
-            val result = JobResult(pid)
-            it.success(result)
-        }
+        val process = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler $command")
+        val pid = process.pid().toString()
+
+        return JobResult(pid)
     }
-
-
-    private fun canRun(activeJobInfo: ActiveJobInfo) = activeJobInfo.jobInfo?.execInfo?.type == JobExecType.WIN_CMD
 }

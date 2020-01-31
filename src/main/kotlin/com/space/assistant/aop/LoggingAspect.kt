@@ -10,7 +10,6 @@ import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
 import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.LoggerFactory
-import reactor.core.publisher.Mono
 
 
 /**
@@ -106,7 +105,6 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
 
     private fun convertResultToString(result: Any?): String = when (result) {
         null -> AnsiConstants.GRAY + "NULL" + AnsiConstants.RESET
-        is Mono<*> -> AnsiConstants.YELLOW + result.metrics().toString() + AnsiConstants.RESET
         is String -> AnsiConstants.GREEN + result + AnsiConstants.RESET
         else -> AnsiConstants.YELLOW + objectToString(result) + AnsiConstants.RESET
     }

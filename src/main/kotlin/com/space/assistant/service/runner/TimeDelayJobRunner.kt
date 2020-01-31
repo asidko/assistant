@@ -1,36 +1,23 @@
 package com.space.assistant.service.runner
 
 import com.space.assistant.core.entity.ActiveJobInfo
-import com.space.assistant.core.entity.JobExecType
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.entity.TimeDelayJobExecInfo
 import com.space.assistant.core.service.JobRunner
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
 
 @Service
 class TimeDelayJobRunner : JobRunner {
 
-    override fun runJob(activeJobInfo: ActiveJobInfo): Mono<JobResult> {
-        if (!canRun(activeJobInfo)) return Mono.empty()
+    override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
+        val execInfo = activeJobInfo.jobInfo?.execInfo as? TimeDelayJobExecInfo ?: return null
 
+        val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
+        val millis = execInfo.seconds.toLong() * 1000
 
-        val seconds = (activeJobInfo.jobInfo?.execInfo as? TimeDelayJobExecInfo)?.seconds
-                ?: return Mono.empty()
+        delay(millis) // <---- wait for given time
 
-
-        return Mono.create {
-            GlobalScope.launch {
-                delay(seconds.toLong() * 1000) // <---- wait for given time
-                val result = JobResult(seconds)
-                it.success(result)
-            }
-        }
+        return prevJobResult?.copy() ?: JobResult(execInfo.seconds)
     }
-
-
-    private fun canRun(activeJobInfo: ActiveJobInfo) = activeJobInfo.jobInfo?.execInfo?.type == JobExecType.TIME_DELAY
 }

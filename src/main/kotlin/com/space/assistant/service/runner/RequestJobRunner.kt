@@ -2,12 +2,10 @@ package com.space.assistant.service.runner
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.space.assistant.core.entity.ActiveJobInfo
-import com.space.assistant.core.entity.JobExecType
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.entity.RequestJobExecInfo
 import com.space.assistant.core.service.JobRunner
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
 import java.net.URL
 
 @Service
@@ -15,28 +13,24 @@ class RequestJobRunner(
         private val objectMapper: ObjectMapper
 ) : JobRunner {
 
-    override fun runJob(activeJobInfo: ActiveJobInfo): Mono<JobResult> {
-        if (!canRun(activeJobInfo)) return Mono.empty()
+    override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
+        val execInfo = activeJobInfo.jobInfo?.execInfo as? RequestJobExecInfo ?: return null
 
-        val url = activeJobInfo.prevActiveJobInfo?.jobResult?.value
-                ?: (activeJobInfo.jobInfo?.execInfo as? RequestJobExecInfo)?.url
-                ?: return Mono.empty()
+        val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
+        val url = prevJobResult?.value
+                ?: execInfo.url
+                ?: return null
 
-        return Mono.create {
-            val json = sendRequest(url)
-            val result = JobResult(json)
-            it.success(result)
-        }
+        val json = sendRequest(url)
+
+        return JobResult(json)
     }
 
-    private fun canRun(activeJobInfo: ActiveJobInfo) =
-            activeJobInfo.jobInfo?.execInfo?.type == JobExecType.REQUEST
 
-    private fun sendRequest(url: String): String {
-        return URL(url)
-                .openConnection()
-                .getInputStream().use {
-                    objectMapper.readTree(it).toString()
-                }
-    }
+    private fun sendRequest(url: String): String = URL(url)
+            .openConnection()
+            .getInputStream()
+            .use {
+                objectMapper.readTree(it).toString()
+            }
 }

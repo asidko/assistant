@@ -17,7 +17,7 @@ data class JsonPathJobResultParseInfo(
     override val type: String = JobResultParseType.JSON_PATH
 }
 
-data class PatternStringResultParseInfo(val text: String) : JobResultParseInfo {
+data class PatternStringJobResultParseInfo(val text: String) : JobResultParseInfo {
     override val type: String = JobResultParseType.PATTERN_STRING
 }
 

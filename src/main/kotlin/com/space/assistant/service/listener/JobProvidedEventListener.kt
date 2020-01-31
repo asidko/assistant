@@ -21,12 +21,12 @@ class JobProvidedEventListener(
         for (runner in jobRunners) {
             GlobalScope.launch {
                 val activeJobInfo = event.activeJobInfo
-                val jobResultMono = runner.runJob(activeJobInfo)
+                val jobResult = runner.runJob(activeJobInfo)
 
-                jobResultMono
-                        .map { jobResult -> activeJobManager.setRawResult(activeJobInfo, jobResult) }
-                        .map { updatedActiveJobInfo -> JobRawResultProvidedEvent(updatedActiveJobInfo) }
-                        .subscribe { event -> eventPublisher.publishEvent(event) }
+                val updatedActiveJobInfo = activeJobManager.setRawResult(activeJobInfo, jobResult)
+
+                val newEvent = JobRawResultProvidedEvent(updatedActiveJobInfo)
+                eventPublisher.publishEvent(newEvent)
             }
         }
     }

@@ -21,12 +21,12 @@ class JobRawResultProvidedEventListener(
         for (parser in jobResultParsers) {
             GlobalScope.launch {
                 val activeJobInfo = event.activeJobInfo
-                val resultMono = parser.parseResult(activeJobInfo)
+                val jobResult = parser.parseResult(activeJobInfo)
 
-                resultMono
-                        .map { jobResult -> activeJobManager.setResult(activeJobInfo, jobResult) }
-                        .map { updatedActiveJobInfo -> JobFinalResultProvidedEvent(updatedActiveJobInfo) }
-                        .subscribe { event -> eventPublisher.publishEvent(event) }
+                val updatedActiveJobInfo = activeJobManager.setResult(activeJobInfo, jobResult)
+
+                val newEvent = JobFinalResultProvidedEvent(updatedActiveJobInfo)
+                eventPublisher.publishEvent(newEvent)
             }
         }
     }

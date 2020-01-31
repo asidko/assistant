@@ -2,7 +2,6 @@ package com.space.assistant.service
 
 import EmptyJobResultParseInfo
 import JsonPathJobResultParseInfo
-import PatternStringResultParseInfo
 import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobRepository
 import org.springframework.stereotype.Service
@@ -55,15 +54,15 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = listOf("SAY_TEXT"),
                     postExecPhrase = emptyList()
             ),
-            JobInfo(
-                    uuid = "TIME",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("время")),
-                    preExecPhrase = emptyList(),
-                    execInfo = PluginJobExecInfo(name = "TimePlugin"),
-                    resultParseInfo = PatternStringResultParseInfo(text = "Текущее время $1"),
-                    redirectToJobs = listOf("SAY_TEXT"),
-                    postExecPhrase = emptyList()
-            ),
+//            JobInfo(
+//                    uuid = "TIME",
+//                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("время")),
+//                    preExecPhrase = emptyList(),
+//                    execInfo = PluginJobExecInfo(name = "TimePlugin"),
+//                    resultParseInfo = PatternStringJobResultParseInfo(text = "Текущее время $1"),
+//                    redirectToJobs = listOf("SAY_TEXT"),
+//                    postExecPhrase = emptyList()
+//            ),
             JobInfo(
                     uuid = "RUN_CHROME",
                     searchInfo = DirectMatchJobSearchInfo(texts = listOf("включи радио")),

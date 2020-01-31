@@ -21,7 +21,6 @@ dependencies {
 	implementation("com.google.cloud:google-cloud-speech:1.22.1")
 	implementation("com.jayway.jsonpath:json-path")
 	implementation("com.profesorfalken:jPowerShell:3.1.1")
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-aop")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
