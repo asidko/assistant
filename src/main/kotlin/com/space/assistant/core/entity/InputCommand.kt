@@ -32,4 +32,4 @@ fun InputCommand.Companion.fromTexts(texts: List<String>): InputCommand = when {
             .let { phrases -> InputCommand(phrase = phrases[0], alternativePhrases = phrases.subList(1, phrases.size)) }
 }
 
-private inline fun tokenizeText(text: String): Phrase = text.trim().split(spaceRegex)
+private fun tokenizeText(text: String): Phrase = text.trim().split(spaceRegex)

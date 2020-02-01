@@ -4,9 +4,10 @@ import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.entity.WinCmdJobExecInfo
 import com.space.assistant.core.service.JobRunner
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service
 
-@Suppress("BlockingMethodInNonBlockingContext")
 @Service
 class WinCmdJobRunner : JobRunner {
 
@@ -18,9 +19,11 @@ class WinCmdJobRunner : JobRunner {
                 ?: (execInfo as? WinCmdJobExecInfo)?.cmd
                 ?: return null
 
-        val process = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler $command")
-        val pid = process.pid().toString()
+        withContext(Dispatchers.IO) {
+            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler $command")
+        }
 
-        return JobResult(pid)
+        return JobResult("")
     }
+
 }

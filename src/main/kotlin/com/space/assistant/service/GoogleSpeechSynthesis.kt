@@ -46,6 +46,7 @@ class GoogleSpeechSynthesis {
     }
 
     private class AudioPlayer {
+        @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
         class AudioListener : LineListener {
             private var done = false
 
