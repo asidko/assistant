@@ -28,8 +28,8 @@ class JobFinalResultProvidedEventListener(
     }
 
     private fun sayPostExecPhrase(activeJobInfo: ActiveJobInfo) {
-        val postExecPhrase = activeJobInfo.jobInfo?.postExecPhrase?.random() ?: ""
-        if (postExecPhrase.isEmpty()) return
+        val postExecPhrases = activeJobInfo.jobInfo?.postExecPhrase ?: return
+        val postExecPhrase = if (postExecPhrases.isNotEmpty()) postExecPhrases.random() else return
 
         val args = activeJobInfo.jobResult?.asArgs()
         val resultPhrase = patternStringReplacer.replacePattern(postExecPhrase, args)
