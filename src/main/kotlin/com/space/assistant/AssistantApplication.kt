@@ -1,13 +1,12 @@
 package com.space.assistant
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.event.ApplicationEventMulticaster
 import org.springframework.context.event.SimpleApplicationEventMulticaster
-import org.springframework.core.env.Environment
+import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.task.SimpleAsyncTaskExecutor
 import org.springframework.scheduling.support.TaskUtils
 
@@ -16,15 +15,13 @@ import org.springframework.scheduling.support.TaskUtils
 @EnableAspectJAutoProxy
 class AssistantApplication
 
-@Autowired
-lateinit var env: Environment
 
 fun main(args: Array<String>) {
-    runApplication<AssistantApplication>(*args)
-    printBanner()
+    val application = runApplication<AssistantApplication>(*args)
+    printBanner(application.environment)
 }
 
-fun printBanner() {
+fun printBanner(env: ConfigurableEnvironment) {
     val port = env.getProperty("local.server.port")
     val exampleUrl = "http://localhost:$port/command/hello"
 

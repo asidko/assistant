@@ -1,4 +1,4 @@
-SET name=assistant-control-center
+SET name=AssistantControlCenter
 
 SET cdir=%~dp0
 SET nssm="%cdir%tools\nssm\x64\nssm.exe"

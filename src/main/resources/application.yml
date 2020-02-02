@@ -1,7 +1,6 @@
 logging:
   level:
     com.space.assistant: DEBUG
-    root: DEBUG
 #    # Uncomment to see google grpc logs (voice recognition and synthesis)
 #    io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler: INFO
 

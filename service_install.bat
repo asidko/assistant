@@ -1,5 +1,8 @@
 TITLE "Installing Assistant service"
-SET name=assistant-control-center
+
+if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
+
+SET name=AssistantControlCenter
 SET cdir=%~dp0
 SET nssm="%cdir%tools\nssm\x64\nssm.exe"
 SET java="%JAVA_HOME%\bin\java.exe"
