@@ -60,12 +60,12 @@ class FakeJobRepository : JobRepository {
                     phraseAfter = emptyList()
             ),
             JobInfo(
-                    uuid = "RUN_CHROME",
+                    uuid = "RADIO",
                     finderInfo = DirectMatchJobFinder.Info(texts = listOf("включи радио")),
                     phraseBefore = listOf("включаю", "открываю", "запускаю", "сейчас будет"),
                     runnerInfo = WinCmdJobRunner.Info(cmd = "http://www.hitfm.ua/player/"),
                     resultParserInfo = EmptyJobResultParser.Info(),
-                    redirectToJobs = emptyList(),
+                    redirectToJobs = listOf("SAY_TEXT"),
                     phraseAfter = emptyList()
             ),
             JobInfo(

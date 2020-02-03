@@ -80,7 +80,7 @@ class LoggingAspect(private val objectMapper: ObjectMapper) {
                             joinPoint.signature.name.prettifyMethodName(),
                             convertResultToString(result))
                 } else {
-                    log.debug("⮤ Exit   {}.{}()",
+                    log.debug("⮤ Exit {}.{}()",
                             joinPoint.signature.declaringTypeName.prettifyClassName(),
                             joinPoint.signature.name.prettifyMethodName())
                 }

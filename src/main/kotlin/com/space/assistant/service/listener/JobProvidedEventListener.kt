@@ -21,7 +21,7 @@ class JobProvidedEventListener(
         for (runner in jobRunners) {
             GlobalScope.launch {
                 val activeJobInfo = event.activeJobInfo
-                val jobResult = runner.runJob(activeJobInfo)
+                val jobResult = runner.runJob(activeJobInfo) ?: return@launch
 
                 val updatedActiveJobInfo = activeJobManager.setRawResult(activeJobInfo, jobResult)
 
