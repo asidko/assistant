@@ -2,8 +2,8 @@ package com.space.assistant.service.runner
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.space.assistant.core.entity.ActiveJobInfo
+import com.space.assistant.core.entity.JobExecInfo
 import com.space.assistant.core.entity.JobResult
-import com.space.assistant.core.entity.RequestJobExecInfo
 import com.space.assistant.core.service.JobRunner
 import org.springframework.stereotype.Service
 import java.net.URL
@@ -13,8 +13,17 @@ class RequestJobRunner(
         private val objectMapper: ObjectMapper
 ) : JobRunner {
 
+    companion object {
+        const val typeName = "REQUEST"
+    }
+
+    data class Info(
+            val url: String,
+            override val type: String = typeName
+    ) : JobExecInfo
+
     override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
-        val execInfo = activeJobInfo.jobInfo?.execInfo as? RequestJobExecInfo ?: return null
+        val execInfo = activeJobInfo.jobInfo?.execInfo as? Info ?: return null
 
         val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
         val url = prevJobResult?.value

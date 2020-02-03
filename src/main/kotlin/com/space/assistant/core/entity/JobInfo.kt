@@ -19,3 +19,7 @@ interface JobSearchInfo {
 interface JobResultParseInfo {
     val type: String
 }
+
+interface JobExecInfo {
+    val type: String
+}
