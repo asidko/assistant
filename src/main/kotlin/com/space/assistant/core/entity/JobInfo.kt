@@ -1,6 +1,5 @@
 package com.space.assistant.core.entity
 
-import JobResultParseInfo
 import com.space.assistant.core.util.simpleID
 
 data class JobInfo(
@@ -14,5 +13,9 @@ data class JobInfo(
 )
 
 interface JobSearchInfo {
+    val type: String
+}
+
+interface JobResultParseInfo {
     val type: String
 }

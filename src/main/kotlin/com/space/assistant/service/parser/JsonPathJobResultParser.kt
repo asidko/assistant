@@ -1,10 +1,7 @@
 package com.space.assistant.service.parser
 
-import JsonPathJobResultParseInfo
 import com.jayway.jsonpath.JsonPath
-import com.space.assistant.core.entity.ActiveJobInfo
-import com.space.assistant.core.entity.JobResult
-import com.space.assistant.core.entity.emptyJobResult
+import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobResultParser
 import com.space.assistant.service.text.PatternStringReplacer
 import org.springframework.stereotype.Service
@@ -13,9 +10,18 @@ import org.springframework.stereotype.Service
 class JsonPathJobResultParser(
         val patternStringReplacer: PatternStringReplacer
 ) : JobResultParser {
+    companion object {
+        const val typeName = "JSON_PATH"
+    }
+
+    data class Info(
+            val jsonPathValues: List<String>,
+            val resultFormatString: String,
+            override val type: String = typeName
+    ) : JobResultParseInfo
 
     override suspend fun parseResult(activeJobInfo: ActiveJobInfo): JobResult? {
-        val resultParseInfo = activeJobInfo.jobInfo?.resultParseInfo as? JsonPathJobResultParseInfo ?: return null
+        val resultParseInfo = activeJobInfo.jobInfo?.resultParseInfo as? Info ?: return null
 
         val jobRawResult = activeJobInfo.jobRawResult ?: return emptyJobResult
 
