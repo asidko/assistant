@@ -2,13 +2,13 @@ package com.space.assistant.service.search
 
 import com.space.assistant.core.entity.CommandAlternative
 import com.space.assistant.core.entity.JobInfo
-import com.space.assistant.core.entity.JobSearchInfo
+import com.space.assistant.core.entity.JobFinderInfo
 import com.space.assistant.core.service.JobRepository
 import com.space.assistant.core.service.JobSearchProvider
 import org.springframework.stereotype.Service
 
 @Service
-class WildcardJobSearchProvider(
+class WildcardJobFinder(
         private val jobRepository: JobRepository
 ) : JobSearchProvider {
 
@@ -19,7 +19,7 @@ class WildcardJobSearchProvider(
     data class Info(
             val text: String,
             override val type: String = typeName
-    ) : JobSearchInfo
+    ) : JobFinderInfo
 
     override fun findJob(command: CommandAlternative): JobInfo? {
         val phrase = command.alternativePhrase
@@ -29,8 +29,8 @@ class WildcardJobSearchProvider(
         val allWildcardJobs = jobRepository.findJobsBySearchType(typeName)
 
         for (job in allWildcardJobs) {
-            if (job.searchInfo is Info) {
-                val wildcardText = job.searchInfo.text
+            if (job.finderInfo is Info) {
+                val wildcardText = job.finderInfo.text
                 val wildcardRegexp = wildcardText
                         .map { if (it != '*') "\\" + it else "(.+?)" }
                         .joinToString("")

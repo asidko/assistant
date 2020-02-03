@@ -4,22 +4,22 @@ import com.space.assistant.core.util.simpleID
 
 data class JobInfo(
         val uuid: String = simpleID(),
-        val searchInfo: JobSearchInfo,
-        val preExecPhrase: List<String>,
-        val execInfo: JobExecInfo,
-        val resultParseInfo: JobResultParseInfo,
-        val postExecPhrase: List<String>,
+        val finderInfo: JobFinderInfo,
+        val phraseBefore: List<String>,
+        val runnerInfo: JobRunnerInfo,
+        val resultParserInfo: JobResultParserInfo,
+        val phraseAfter: List<String>,
         val redirectToJobs: List<String>
 )
 
-interface JobSearchInfo {
+interface JobFinderInfo {
     val type: String
 }
 
-interface JobResultParseInfo {
+interface JobResultParserInfo {
     val type: String
 }
 
-interface JobExecInfo {
+interface JobRunnerInfo {
     val type: String
 }

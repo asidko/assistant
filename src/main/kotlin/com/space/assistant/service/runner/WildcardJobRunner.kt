@@ -1,10 +1,10 @@
 package com.space.assistant.service.runner
 
 import com.space.assistant.core.entity.ActiveJobInfo
-import com.space.assistant.core.entity.JobExecInfo
+import com.space.assistant.core.entity.JobRunnerInfo
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.JobRunner
-import com.space.assistant.service.search.WildcardJobSearchProvider
+import com.space.assistant.service.search.WildcardJobFinder
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,22 +17,22 @@ class WildcardJobRunner : JobRunner {
     }
 
     data class Info(
-            val pattern: String,
-            val resultExpression: String,
+            val wildcardText: String,
+            val resultText: String,
             override val type: String = typeName
-    ) : JobExecInfo
+    ) : JobRunnerInfo
 
     override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
-        val execInfo = activeJobInfo.jobInfo?.execInfo as? Info ?: return null
+        val execInfo = activeJobInfo.jobInfo?.runnerInfo as? Info ?: return null
 
         val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
         val commandText = prevJobResult?.value
                 ?: activeJobInfo.commandAlternativeSucceed?.alternativePhrase?.joinToString(" ")
                 ?: return null
 
-        val wildcardSearchText = (activeJobInfo.jobInfo.searchInfo
-                as? WildcardJobSearchProvider.Info)?.text ?: ""
-        val wildcardPattern = execInfo.pattern.ifEmpty { wildcardSearchText }
+        val wildcardSearchText = (activeJobInfo.jobInfo.finderInfo
+                as? WildcardJobFinder.Info)?.text ?: ""
+        val wildcardPattern = execInfo.wildcardText.ifEmpty { wildcardSearchText }
         val wildcardRegex = wildcardPattern
                 .map { it.escapeForRegexp() }
                 .joinToString("")
@@ -41,7 +41,7 @@ class WildcardJobRunner : JobRunner {
         val wildcardValues = findRegexGroupValues(wildcardRegex, commandText)
 
         val resultString =
-                if (execInfo.resultExpression.isNotEmpty()) replaceVariablesByArgs(execInfo.resultExpression, wildcardValues)
+                if (execInfo.resultText.isNotEmpty()) replaceVariablesByArgs(execInfo.resultText, wildcardValues)
                 else wildcardValues.joinToString(",")
 
         return JobResult(resultString)

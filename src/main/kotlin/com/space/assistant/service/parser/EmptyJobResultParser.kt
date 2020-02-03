@@ -2,7 +2,7 @@ package com.space.assistant.service.parser
 
 import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.JobResult
-import com.space.assistant.core.entity.JobResultParseInfo
+import com.space.assistant.core.entity.JobResultParserInfo
 import com.space.assistant.core.entity.emptyJobResult
 import com.space.assistant.core.service.JobResultParser
 import org.springframework.stereotype.Service
@@ -15,10 +15,10 @@ class EmptyJobResultParser : JobResultParser {
 
     data class Info(
             override val type: String = typeName
-    ) : JobResultParseInfo
+    ) : JobResultParserInfo
 
     override suspend fun parseResult(activeJobInfo: ActiveJobInfo): JobResult? {
-        if (activeJobInfo.jobInfo?.resultParseInfo !is Info) return null
+        if (activeJobInfo.jobInfo?.resultParserInfo !is Info) return null
         return activeJobInfo.jobRawResult ?: emptyJobResult
     }
 }

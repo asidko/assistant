@@ -16,10 +16,10 @@ class JustSayJobRunner(
     data class Info(
             val text: String,
             override val type: String = typeName
-    ) : JobExecInfo
+    ) : JobRunnerInfo
 
     override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
-        val execInfo = activeJobInfo.jobInfo?.execInfo as? Info ?: return null
+        val execInfo = activeJobInfo.jobInfo?.runnerInfo as? Info ?: return null
 
         val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
         val textToSay = prevJobResult?.value ?: execInfo.text

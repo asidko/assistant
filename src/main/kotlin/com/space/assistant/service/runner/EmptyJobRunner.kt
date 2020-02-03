@@ -13,10 +13,10 @@ class EmptyJobRunner : JobRunner {
 
     data class Info(
             override val type: String = typeName
-    ) : JobExecInfo
+    ) : JobRunnerInfo
 
     override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
-        if (activeJobInfo.jobInfo?.execInfo !is Info) return null
+        if (activeJobInfo.jobInfo?.runnerInfo !is Info) return null
         return emptyJobResult
     }
 }

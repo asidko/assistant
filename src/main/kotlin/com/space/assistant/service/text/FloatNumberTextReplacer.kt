@@ -1,11 +1,11 @@
 package com.space.assistant.service.text
 
-import com.space.assistant.core.service.StringProcessor
+import com.space.assistant.core.service.TextReplacer
 import org.springframework.stereotype.Service
 import kotlin.math.roundToInt
 
 @Service
-class NumberTextProcessor : StringProcessor {
+class FloatNumberTextReplacer : TextReplacer {
     private val decimalNumberRegex = "-?\\d*\\.\\d+".toRegex()
 
     override fun apply(text: String) = text.replace(decimalNumberRegex) { matchResult ->

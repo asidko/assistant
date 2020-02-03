@@ -16,10 +16,10 @@ class PowershellJobRunner : JobRunner {
     data class Info(
             val cmd: String,
             override val type: String = typeName
-    ) : JobExecInfo
+    ) : JobRunnerInfo
 
     override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
-        val execInfo = activeJobInfo.jobInfo?.execInfo as? Info ?: return null
+        val execInfo = activeJobInfo.jobInfo?.runnerInfo as? Info ?: return null
 
         val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
         val command = prevJobResult?.value

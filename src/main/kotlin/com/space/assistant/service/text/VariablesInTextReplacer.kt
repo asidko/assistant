@@ -1,12 +1,12 @@
 package com.space.assistant.service.text
 
-import com.space.assistant.core.service.StringProcessor
+import com.space.assistant.core.service.TextReplacer
 import com.space.assistant.service.util.applyAsPipe
 import org.springframework.stereotype.Service
 
 @Service
-class PatternStringReplacer(
-        val stringProcessors: List<StringProcessor>
+class VariablesInTextReplacer(
+        val textReplacers: List<TextReplacer>
 ) {
     fun replacePattern(pattern: String, values: List<Any>?): String {
         if (values == null || values.isEmpty()) return pattern
@@ -15,7 +15,7 @@ class PatternStringReplacer(
         for (i in 0..values.lastIndex)
             resultString = resultString.replace("$${i + 1}", values[i].toString())
 
-        resultString = stringProcessors.applyAsPipe(resultString)
+        resultString = textReplacers.applyAsPipe(resultString)
 
         return resultString
     }

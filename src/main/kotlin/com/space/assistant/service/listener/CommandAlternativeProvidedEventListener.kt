@@ -31,8 +31,8 @@ class CommandAlternativeProvidedEventListener(
 
                 eventPublisher.publishEvent(JobProvidedEvent(activeJobInfo))
 
-                if (jobInfo.preExecPhrase.isNotEmpty())
-                    speakService.say(jobInfo.preExecPhrase.random())
+                if (jobInfo.phraseBefore.isNotEmpty())
+                    speakService.say(jobInfo.phraseBefore.random())
 
             }
         }

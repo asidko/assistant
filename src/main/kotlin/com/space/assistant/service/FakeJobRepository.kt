@@ -6,9 +6,9 @@ import com.space.assistant.core.service.JobRepository
 import com.space.assistant.service.parser.EmptyJobResultParser
 import com.space.assistant.service.parser.JsonPathJobResultParser
 import com.space.assistant.service.runner.*
-import com.space.assistant.service.search.DirectMatchJobSearchProvider
-import com.space.assistant.service.search.EmptyJobSearchProvider
-import com.space.assistant.service.search.WildcardJobSearchProvider
+import com.space.assistant.service.search.DirectMatchJobFinder
+import com.space.assistant.service.search.EmptyJobFinder
+import com.space.assistant.service.search.WildcardJobFinder
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,8 +17,8 @@ class FakeJobRepository : JobRepository {
     override fun findJobByPhrase(phrase: Phrase): JobInfo? {
         val phraseText = phrase.joinToString(" ")
         return jobs
-                .filter { it.searchInfo is DirectMatchJobSearchProvider.Info }
-                .find { (it.searchInfo as DirectMatchJobSearchProvider.Info).texts.contains(phraseText) }
+                .filter { it.finderInfo is DirectMatchJobFinder.Info }
+                .find { (it.finderInfo as DirectMatchJobFinder.Info).texts.contains(phraseText) }
     }
 
     override fun findJobByUuid(uuid: String): JobInfo? {
@@ -26,82 +26,82 @@ class FakeJobRepository : JobRepository {
     }
 
     override fun findJobsBySearchType(searchType: String): List<JobInfo> {
-        return jobs.filter { it.searchInfo.type == searchType }
+        return jobs.filter { it.finderInfo.type == searchType }
     }
 
     private val jobs = listOf(
             JobInfo(
                     uuid = "SAY_HELLO",
-                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("hello")),
-                    preExecPhrase = listOf("выполняю"),
-                    execInfo = JustSayJobRunner.Info(text = "Hello world"),
-                    resultParseInfo = EmptyJobResultParser.Info(),
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("hello")),
+                    phraseBefore = listOf("выполняю"),
+                    runnerInfo = JustSayJobRunner.Info(text = "Hello world"),
+                    resultParserInfo = EmptyJobResultParser.Info(),
                     redirectToJobs = emptyList(),
-                    postExecPhrase = emptyList()
+                    phraseAfter = emptyList()
             ),
             JobInfo(
                     uuid = "SAY_TEXT",
-                    searchInfo = EmptyJobSearchProvider.Info(),
-                    preExecPhrase = emptyList(),
-                    execInfo = JustSayJobRunner.Info(text = ""),
-                    resultParseInfo = EmptyJobResultParser.Info(),
+                    finderInfo = EmptyJobFinder.Info(),
+                    phraseBefore = emptyList(),
+                    runnerInfo = JustSayJobRunner.Info(text = ""),
+                    resultParserInfo = EmptyJobResultParser.Info(),
                     redirectToJobs = emptyList(),
-                    postExecPhrase = emptyList()
+                    phraseAfter = emptyList()
             ),
             JobInfo(
                     uuid = "SAY_WEATHER",
-                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("погода")),
-                    preExecPhrase = listOf("уточняю температуру", "секундочку", "смотрю"),
-                    execInfo = RequestJobRunner.Info(url = "https://www.metaweather.com/api/location/924938/"),
-                    resultParseInfo = JsonPathJobResultParser.Info(
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("погода")),
+                    phraseBefore = listOf("уточняю температуру", "секундочку", "смотрю"),
+                    runnerInfo = RequestJobRunner.Info(url = "https://www.metaweather.com/api/location/924938/"),
+                    resultParserInfo = JsonPathJobResultParser.Info(
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
                             resultFormatString = "Текущая температура $1 градусов"),
                     redirectToJobs = listOf("SAY_TEXT"),
-                    postExecPhrase = emptyList()
+                    phraseAfter = emptyList()
             ),
             JobInfo(
                     uuid = "RUN_CHROME",
-                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("включи радио")),
-                    preExecPhrase = listOf("включаю", "открываю", "запускаю", "сейчас будет"),
-                    execInfo = WinCmdJobRunner.Info(cmd = "http://www.hitfm.ua/player/"),
-                    resultParseInfo = EmptyJobResultParser.Info(),
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("включи радио")),
+                    phraseBefore = listOf("включаю", "открываю", "запускаю", "сейчас будет"),
+                    runnerInfo = WinCmdJobRunner.Info(cmd = "http://www.hitfm.ua/player/"),
+                    resultParserInfo = EmptyJobResultParser.Info(),
                     redirectToJobs = emptyList(),
-                    postExecPhrase = emptyList()
+                    phraseAfter = emptyList()
             ),
             JobInfo(
                     uuid = "GOOGLE_SEARCH",
-                    searchInfo = WildcardJobSearchProvider.Info(text = "найти *"),
-                    preExecPhrase = listOf("выполняю поиск", "окей, ищу"),
-                    execInfo = WildcardJobRunner.Info(pattern = "", resultExpression = "https://www.google.com/search?q=$1"),
-                    resultParseInfo = EmptyJobResultParser.Info(),
+                    finderInfo = WildcardJobFinder.Info(text = "найти *"),
+                    phraseBefore = listOf("выполняю поиск", "окей, ищу"),
+                    runnerInfo = WildcardJobRunner.Info(wildcardText = "", resultText = "https://www.google.com/search?q=$1"),
+                    resultParserInfo = EmptyJobResultParser.Info(),
                     redirectToJobs = emptyList(),
-                    postExecPhrase = emptyList()
+                    phraseAfter = emptyList()
             ),
             JobInfo(
                     uuid = "VOLUME_UP",
-                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("volume up")),
-                    preExecPhrase = emptyList(),
-                    execInfo = PowershellJobRunner.Info(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
-                    resultParseInfo = EmptyJobResultParser.Info(),
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("volume up")),
+                    phraseBefore = emptyList(),
+                    runnerInfo = PowershellJobRunner.Info(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
+                    resultParserInfo = EmptyJobResultParser.Info(),
                     redirectToJobs = emptyList(),
-                    postExecPhrase = listOf("Звук повышен", "Звук увеличен")
+                    phraseAfter = listOf("Звук повышен", "Звук увеличен")
             ),
             JobInfo(
                     uuid = "10_SECONDS",
-                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("10 секунд")),
-                    preExecPhrase = listOf("Засекаю 10 секунд", "Отсчитываю 10 секунд", "Таймер на 10 секунд установлен"),
-                    execInfo = TimeDelayJobRunner.Info(seconds = "10"),
-                    resultParseInfo = EmptyJobResultParser.Info(),
-                    postExecPhrase = listOf("10 секунд прошло", "Время вышло"),
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("10 секунд")),
+                    phraseBefore = listOf("Засекаю 10 секунд", "Отсчитываю 10 секунд", "Таймер на 10 секунд установлен"),
+                    runnerInfo = TimeDelayJobRunner.Info(seconds = "10"),
+                    resultParserInfo = EmptyJobResultParser.Info(),
+                    phraseAfter = listOf("10 секунд прошло", "Время вышло"),
                     redirectToJobs = emptyList()
             ),
             JobInfo(
                     uuid = "CHARLIE",
-                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("прием", "прийом", "чуєш", "ти чуєш", "слышишь", "ты слышишь")),
-                    preExecPhrase = listOf("Слышу вас", "Я здесь", "Я наместе", "Все нормально", "Да-да", "Работаю"),
-                    execInfo = EmptyJobRunner.Info(),
-                    resultParseInfo = EmptyJobResultParser.Info(),
-                    postExecPhrase = listOf(),
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("прием", "прийом", "чуєш", "ти чуєш", "слышишь", "ты слышишь")),
+                    phraseBefore = listOf("Слышу вас", "Я здесь", "Я наместе", "Все нормально", "Да-да", "Работаю"),
+                    runnerInfo = EmptyJobRunner.Info(),
+                    resultParserInfo = EmptyJobResultParser.Info(),
+                    phraseAfter = listOf(),
                     redirectToJobs = emptyList()
             )
 

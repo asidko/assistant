@@ -1,7 +1,7 @@
 package com.space.assistant.service.runner
 
 import com.space.assistant.core.entity.ActiveJobInfo
-import com.space.assistant.core.entity.JobExecInfo
+import com.space.assistant.core.entity.JobRunnerInfo
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.JobRunner
 import kotlinx.coroutines.Dispatchers
@@ -18,10 +18,10 @@ class WinCmdJobRunner : JobRunner {
     data class Info(
             val cmd: String,
             override val type: String = typeName
-    ) : JobExecInfo
+    ) : JobRunnerInfo
 
     override suspend fun runJob(activeJobInfo: ActiveJobInfo): JobResult? {
-        val execInfo = activeJobInfo.jobInfo?.execInfo as? Info ?: return null
+        val execInfo = activeJobInfo.jobInfo?.runnerInfo as? Info ?: return null
 
         val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
         val command = prevJobResult?.value
