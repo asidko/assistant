@@ -36,17 +36,17 @@ class FakeJobRepository : JobRepository {
                     phraseBefore = listOf("выполняю"),
                     runnerInfo = JustSayJobRunner.Info(text = "Hello world"),
                     resultParserInfo = EmptyJobResultParser.Info(),
-                    redirectToJobs = emptyList(),
-                    phraseAfter = emptyList()
+                    redirectToJobs = listOf(),
+                    phraseAfter = listOf()
             ),
             JobInfo(
                     uuid = "SAY_TEXT",
                     finderInfo = EmptyJobFinder.Info(),
-                    phraseBefore = emptyList(),
+                    phraseBefore = listOf(),
                     runnerInfo = JustSayJobRunner.Info(text = ""),
                     resultParserInfo = EmptyJobResultParser.Info(),
-                    redirectToJobs = emptyList(),
-                    phraseAfter = emptyList()
+                    redirectToJobs = listOf(),
+                    phraseAfter = listOf()
             ),
             JobInfo(
                     uuid = "SAY_WEATHER",
@@ -57,7 +57,7 @@ class FakeJobRepository : JobRepository {
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
                             resultFormatString = "Текущая температура $1 градусов"),
                     redirectToJobs = listOf("SAY_TEXT"),
-                    phraseAfter = emptyList()
+                    phraseAfter = listOf()
             ),
             JobInfo(
                     uuid = "RADIO",
@@ -66,7 +66,16 @@ class FakeJobRepository : JobRepository {
                     runnerInfo = WinCmdJobRunner.Info(cmd = "http://www.hitfm.ua/player/"),
                     resultParserInfo = EmptyJobResultParser.Info(),
                     redirectToJobs = listOf("SAY_TEXT"),
-                    phraseAfter = emptyList()
+                    phraseAfter = listOf()
+            ),
+            JobInfo(
+                    uuid = "RADIO_OFF",
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("выключи радио", "выключить радио")),
+                    phraseBefore = listOf("выключаю"),
+                    runnerInfo = PowershellJobRunner.Info(cmd = "taskkill /F /IM chrome.exe /T"),
+                    resultParserInfo = EmptyJobResultParser.Info(),
+                    redirectToJobs = listOf(),
+                    phraseAfter = listOf()
             ),
             JobInfo(
                     uuid = "GOOGLE_SEARCH",
@@ -74,16 +83,16 @@ class FakeJobRepository : JobRepository {
                     phraseBefore = listOf("выполняю поиск", "окей, ищу"),
                     runnerInfo = WildcardJobRunner.Info(wildcardText = "", resultText = "https://www.google.com/search?q=$1"),
                     resultParserInfo = EmptyJobResultParser.Info(),
-                    redirectToJobs = emptyList(),
-                    phraseAfter = emptyList()
+                    redirectToJobs = listOf(),
+                    phraseAfter = listOf()
             ),
             JobInfo(
                     uuid = "VOLUME_UP",
                     finderInfo = DirectMatchJobFinder.Info(texts = listOf("volume up")),
-                    phraseBefore = emptyList(),
+                    phraseBefore = listOf(),
                     runnerInfo = PowershellJobRunner.Info(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
                     resultParserInfo = EmptyJobResultParser.Info(),
-                    redirectToJobs = emptyList(),
+                    redirectToJobs = listOf(),
                     phraseAfter = listOf("Звук повышен", "Звук увеличен")
             ),
             JobInfo(
@@ -93,16 +102,16 @@ class FakeJobRepository : JobRepository {
                     runnerInfo = TimeDelayJobRunner.Info(seconds = "10"),
                     resultParserInfo = EmptyJobResultParser.Info(),
                     phraseAfter = listOf("10 секунд прошло", "Время вышло"),
-                    redirectToJobs = emptyList()
+                    redirectToJobs = listOf()
             ),
             JobInfo(
-                    uuid = "CHARLIE",
-                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("прием", "прийом", "чуєш", "ти чуєш", "слышишь", "ты слышишь")),
+                    uuid = "TEST",
+                    finderInfo = DirectMatchJobFinder.Info(texts = listOf("прием", "прийом", "чуєш", "ти чуєш", "ты тут", "ты здесь", "слышишь", "ты слышишь")),
                     phraseBefore = listOf("Слышу вас", "Я здесь", "Я наместе", "Все нормально", "Да-да", "Работаю"),
                     runnerInfo = EmptyJobRunner.Info(),
                     resultParserInfo = EmptyJobResultParser.Info(),
                     phraseAfter = listOf(),
-                    redirectToJobs = emptyList()
+                    redirectToJobs = listOf()
             )
 
     )
