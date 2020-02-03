@@ -1,6 +1,7 @@
-package com.space.assistant.service
+package com.space.assistant.service.speech.recognition
 
 import com.space.assistant.core.service.VoiceRecognitionService
+import com.space.assistant.service.speech.recognition.GoogleInfiniteStreamRecognize
 import org.springframework.stereotype.Service
 
 @Service

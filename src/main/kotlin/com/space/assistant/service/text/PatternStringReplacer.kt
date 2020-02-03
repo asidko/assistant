@@ -1,6 +1,7 @@
-package com.space.assistant.service
+package com.space.assistant.service.text
 
 import com.space.assistant.core.service.StringProcessor
+import com.space.assistant.service.util.applyAsPipe
 import org.springframework.stereotype.Service
 
 @Service

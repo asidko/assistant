@@ -1,4 +1,4 @@
-package com.space.assistant.service
+package com.space.assistant.service.speech.synthesis
 
 import com.google.cloud.texttospeech.v1beta1.*
 import org.slf4j.LoggerFactory

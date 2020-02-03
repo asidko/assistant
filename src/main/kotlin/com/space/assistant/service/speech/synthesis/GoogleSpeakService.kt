@@ -1,4 +1,4 @@
-package com.space.assistant.service
+package com.space.assistant.service.speech.synthesis
 
 import com.space.assistant.core.service.SpeakService
 import org.slf4j.LoggerFactory

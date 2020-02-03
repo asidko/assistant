@@ -1,4 +1,4 @@
-package com.space.assistant.service
+package com.space.assistant.service.speech.recognition
 
 import com.google.api.gax.rpc.ClientStream
 import com.google.api.gax.rpc.ResponseObserver

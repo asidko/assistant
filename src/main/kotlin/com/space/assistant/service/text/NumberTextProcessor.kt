@@ -4,14 +4,13 @@ import com.space.assistant.core.service.StringProcessor
 import org.springframework.stereotype.Service
 import kotlin.math.roundToInt
 
-@Suppress("NestedLambdaShadowedImplicitParameter")
 @Service
 class NumberTextProcessor : StringProcessor {
     private val decimalNumberRegex = "-?\\d*\\.\\d+".toRegex()
 
-    override fun apply(text: String) = text.replace(decimalNumberRegex) {
-        it.value
+    override fun apply(text: String) = text.replace(decimalNumberRegex) { matchResult ->
+        matchResult.value
                 // Round to 2 decimals
-                .let { ((it.toFloat() * 100).roundToInt() / 100.0).toString() }
+                .let { num -> ((num.toFloat() * 100).roundToInt() / 100.0).toString() }
     }
 }

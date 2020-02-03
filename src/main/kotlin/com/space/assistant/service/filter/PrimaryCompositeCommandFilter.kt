@@ -2,7 +2,7 @@ package com.space.assistant.service.filter
 
 import com.space.assistant.core.entity.InputCommand
 import com.space.assistant.core.service.InputCommandFilter
-import com.space.assistant.service.applyAsNullablePipe
+import com.space.assistant.service.util.applyAsNullablePipe
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Service
 

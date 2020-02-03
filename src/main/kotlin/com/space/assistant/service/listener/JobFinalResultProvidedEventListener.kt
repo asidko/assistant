@@ -5,7 +5,7 @@ import com.space.assistant.core.entity.asArgs
 import com.space.assistant.core.event.JobFinalResultProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.SpeakService
-import com.space.assistant.service.PatternStringReplacer
+import com.space.assistant.service.text.PatternStringReplacer
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service

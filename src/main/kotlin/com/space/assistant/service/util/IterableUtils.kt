@@ -1,4 +1,4 @@
-package com.space.assistant.service
+package com.space.assistant.service.util
 
 import java.util.function.Function
 

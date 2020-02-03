@@ -6,7 +6,7 @@ import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.entity.emptyJobResult
 import com.space.assistant.core.service.JobResultParser
-import com.space.assistant.service.PatternStringReplacer
+import com.space.assistant.service.text.PatternStringReplacer
 import org.springframework.stereotype.Service
 
 @Service

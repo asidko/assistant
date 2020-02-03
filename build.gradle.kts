@@ -17,6 +17,9 @@ repositories {
 
 dependencies {
 	// Custom libs /////////////////////////////////////////////
+	// Sphinx
+	implementation("net.sf.phat:sphinx4-core:5prealpha")
+	implementation("net.sf.phat:sphinx4-data:5prealpha")
 	// Google
 	implementation("com.google.cloud:google-cloud-texttospeech:0.117.1-beta")
 	implementation("com.google.cloud:google-cloud-speech:1.22.1")
