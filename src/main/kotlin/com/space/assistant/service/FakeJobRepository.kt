@@ -4,6 +4,9 @@ import EmptyJobResultParseInfo
 import JsonPathJobResultParseInfo
 import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobRepository
+import com.space.assistant.service.search.DirectMatchJobSearchProvider
+import com.space.assistant.service.search.EmptyJobSearchProvider
+import com.space.assistant.service.search.WildcardJobSearchProvider
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,8 +15,8 @@ class FakeJobRepository : JobRepository {
     override fun findJobByPhrase(phrase: Phrase): JobInfo? {
         val phraseText = phrase.joinToString(" ")
         return jobs
-                .filter { it.searchInfo.type == JobSearchType.DIRECT_MATCH }
-                .find { (it.searchInfo as DirectMatchJobSearchInfo).texts.contains(phraseText) }
+                .filter { it.searchInfo is DirectMatchJobSearchProvider.Info }
+                .find { (it.searchInfo as DirectMatchJobSearchProvider.Info).texts.contains(phraseText) }
     }
 
     override fun findJobByUuid(uuid: String): JobInfo? {
@@ -27,7 +30,7 @@ class FakeJobRepository : JobRepository {
     private val jobs = listOf(
             JobInfo(
                     uuid = "SAY_HELLO",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("hello")),
+                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("hello")),
                     preExecPhrase = listOf("выполняю"),
                     execInfo = JustSayJobExecInfo(text = "Hello world"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -36,7 +39,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "SAY_TEXT",
-                    searchInfo = EmptyJobSearchInfo(),
+                    searchInfo = EmptyJobSearchProvider.Info(),
                     preExecPhrase = emptyList(),
                     execInfo = JustSayJobExecInfo(text = ""),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -45,7 +48,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "SAY_WEATHER",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("погода")),
+                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("погода")),
                     preExecPhrase = listOf("уточняю температуру", "секундочку", "смотрю"),
                     execInfo = RequestJobExecInfo(url = "https://www.metaweather.com/api/location/924938/"),
                     resultParseInfo = JsonPathJobResultParseInfo(
@@ -54,18 +57,9 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = listOf("SAY_TEXT"),
                     postExecPhrase = emptyList()
             ),
-//            JobInfo(
-//                    uuid = "TIME",
-//                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("время")),
-//                    preExecPhrase = emptyList(),
-//                    execInfo = PluginJobExecInfo(name = "TimePlugin"),
-//                    resultParseInfo = PatternStringJobResultParseInfo(text = "Текущее время $1"),
-//                    redirectToJobs = listOf("SAY_TEXT"),
-//                    postExecPhrase = emptyList()
-//            ),
             JobInfo(
                     uuid = "RUN_CHROME",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("включи радио")),
+                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("включи радио")),
                     preExecPhrase = listOf("включаю", "открываю", "запускаю", "сейчас будет"),
                     execInfo = WinCmdJobExecInfo(cmd = "http://www.hitfm.ua/player/"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -74,7 +68,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "GOOGLE_SEARCH",
-                    searchInfo = WildcardJobSearchInfo(text = "найти *"),
+                    searchInfo = WildcardJobSearchProvider.Info(text = "найти *"),
                     preExecPhrase = listOf("выполняю поиск", "окей, ищу"),
                     execInfo = WildcardJobExecInfo(expression = "https://www.google.com/search?q=$1"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -83,7 +77,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "VOLUME_UP",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("volume up")),
+                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("volume up")),
                     preExecPhrase = emptyList(),
                     execInfo = PowerShellJobExecInfo(cmd = "\$obj = new-object -com wscript.shell; \$obj.SendKeys([char]174)"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -92,7 +86,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "10_SECONDS",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("10 секунд")),
+                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("10 секунд")),
                     preExecPhrase = listOf("Засекаю 10 секунд", "Отсчитываю 10 секунд", "Таймер на 10 секунд установлен"),
                     execInfo = TimeDelayJobExecInfo(seconds = "10"),
                     resultParseInfo = EmptyJobResultParseInfo(),
@@ -101,7 +95,7 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "CHARLIE",
-                    searchInfo = DirectMatchJobSearchInfo(texts = listOf("прием", "прийом", "как слышно", "слышишь")),
+                    searchInfo = DirectMatchJobSearchProvider.Info(texts = listOf("прием", "прийом", "как слышно", "слышишь")),
                     preExecPhrase = listOf("Слышу вас", "Я здесь", "Я наместе", "Все нормально", "Да-да, слышу", "Все работает, слышу вас"),
                     execInfo = EmptyJobExecInfo(),
                     resultParseInfo = EmptyJobResultParseInfo(),

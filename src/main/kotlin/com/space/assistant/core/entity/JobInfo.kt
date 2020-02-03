@@ -12,3 +12,7 @@ data class JobInfo(
         val postExecPhrase: List<String>,
         val redirectToJobs: List<String>
 )
+
+interface JobSearchInfo {
+    val type: String
+}
