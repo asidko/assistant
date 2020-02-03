@@ -1,6 +1,7 @@
 package com.space.assistant.service
 
 import com.space.assistant.core.entity.ActiveJobEvent
+import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.event.CommandAlternativeProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.EventPublisher
@@ -16,38 +17,27 @@ class GuardEventPublisher(
 ) : EventPublisher {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    val suppressingEventsWhenJobFound = mapOf(
-            CommandAlternativeProvidedEvent::class to 1
-    )
-
     override fun publishEvent(event: Any) {
-        if (suppressEvent(event)) return
+        val shouldDeny = event is ActiveJobEvent && shouldDeny(event)
+
+        if (shouldDeny) {
+            log.debug("Event {} is denied", event::class.simpleName)
+            return
+        }
+
         eventPublisher.publishEvent(event)
     }
 
-    private fun suppressEvent(event: Any): Boolean {
-        if (event !is ActiveJobEvent) return false
+    private fun shouldDeny(event: ActiveJobEvent): Boolean {
+        val lastActiveJobInfo = activeJobManager.getActiveJob(event.activeJobInfo.uuid)
+                ?: return false
 
-        val isSuppressed = shouldSuppressWhenJobFound(event)
-
-        if (isSuppressed) {
-            log.debug("Event {} is suppressed", event::class.simpleName)
+        if (event is CommandAlternativeProvidedEvent && isJobAlreadyFound(lastActiveJobInfo))
             return true
-        }
+
 
         return false
     }
 
-
-    private fun shouldSuppressWhenJobFound(currentEvent: ActiveJobEvent): Boolean {
-        val activeJobInfo = currentEvent.activeJobInfo
-        val freshActiveJobInfo = activeJobManager.getActiveJob(activeJobInfo.uuid) ?: return false
-
-        if (freshActiveJobInfo.jobInfo == null) return false
-
-        val hasDenyClass = currentEvent::class in suppressingEventsWhenJobFound
-        if (hasDenyClass) log.debug("Suppressing event {} due to job {} already found", currentEvent::class.simpleName, freshActiveJobInfo.jobInfo.uuid)
-
-        return hasDenyClass
-    }
+    private fun isJobAlreadyFound(activeJobInfo: ActiveJobInfo) = activeJobInfo.jobInfo != null
 }
