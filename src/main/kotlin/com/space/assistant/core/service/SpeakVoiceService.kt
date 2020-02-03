@@ -1,5 +1,5 @@
 package com.space.assistant.core.service
 
-interface SpeakService {
+interface SpeakVoiceService {
     fun say(text: String)
 }

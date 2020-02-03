@@ -1,15 +1,27 @@
-package com.space.assistant.service.speech.synthesis
+package com.space.assistant.service.voice.speak
 
 import com.google.cloud.texttospeech.v1beta1.*
+import com.space.assistant.core.service.SpeakVoiceService
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.LineEvent
 import javax.sound.sampled.LineListener
 
+@Service
+class GoogleSpeakVoiceService : SpeakVoiceService {
+    private val log = LoggerFactory.getLogger(this.javaClass)
+    private val googleSpeech = GoogleSpeechSynthesis()
+
+    @Synchronized
+    override fun say(text: String) {
+        log.info("Speaking: $text")
+        googleSpeech.say(text)
+    }
+}
+
 
 @Suppress("NAME_SHADOWING")
-@Component
 class GoogleSpeechSynthesis {
     private val player = AudioPlayer()
     private val log = LoggerFactory.getLogger(this.javaClass)

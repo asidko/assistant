@@ -2,12 +2,12 @@ package com.space.assistant.service.runner
 
 import com.space.assistant.core.entity.*
 import com.space.assistant.core.service.JobRunner
-import com.space.assistant.core.service.SpeakService
+import com.space.assistant.core.service.SpeakVoiceService
 import org.springframework.stereotype.Service
 
 @Service
 class JustSayJobRunner(
-        private val speakService: SpeakService
+        private val speakVoiceService: SpeakVoiceService
 ) : JobRunner {
     companion object {
         const val typeName = "JUST_SAY"
@@ -24,7 +24,7 @@ class JustSayJobRunner(
         val prevJobResult = activeJobInfo.prevActiveJobInfo?.jobResult
         val textToSay = prevJobResult?.value ?: execInfo.text
 
-        speakService.say(textToSay)
+        speakVoiceService.say(textToSay)
 
         return JobResult(textToSay)
     }

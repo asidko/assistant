@@ -4,7 +4,7 @@ import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.asArgs
 import com.space.assistant.core.event.JobFinalResultProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
-import com.space.assistant.core.service.SpeakService
+import com.space.assistant.core.service.SpeakVoiceService
 import com.space.assistant.service.text.VariablesInTextReplacer
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 class JobFinalResultProvidedEventListener(
         private val activeJobManager: ActiveJobManager,
         private val variablesInTextReplacer: VariablesInTextReplacer,
-        private val speakService: SpeakService) {
+        private val speakVoiceService: SpeakVoiceService) {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 
@@ -33,7 +33,7 @@ class JobFinalResultProvidedEventListener(
 
         val args = activeJobInfo.jobResult?.asArgs()
         val resultPhrase = variablesInTextReplacer.replacePattern(postExecPhrase, args)
-        speakService.say(resultPhrase)
+        speakVoiceService.say(resultPhrase)
     }
 }
 

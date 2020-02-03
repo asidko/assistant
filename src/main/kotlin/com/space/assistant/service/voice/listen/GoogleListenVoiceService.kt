@@ -1,12 +1,14 @@
-package com.space.assistant.service.speech.recognition
+package com.space.assistant.service.voice.listen
 
 import com.google.api.gax.rpc.ClientStream
 import com.google.api.gax.rpc.ResponseObserver
 import com.google.api.gax.rpc.StreamController
 import com.google.cloud.speech.v1p1beta1.*
 import com.google.protobuf.ByteString
+import com.space.assistant.core.service.ListenVoiceService
+import org.springframework.stereotype.Service
 import java.text.DecimalFormat
-import java.util.*
+import java.util.ArrayList
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import javax.sound.sampled.AudioFormat
@@ -15,7 +17,22 @@ import javax.sound.sampled.DataLine
 import javax.sound.sampled.TargetDataLine
 import kotlin.math.floor
 
-class GoogleInfiniteStreamRecognize(private val onResultCallback: (List<String>) -> Unit) {
+@Service
+class GoogleListenVoiceService : ListenVoiceService {
+    var googleRecognition: GoogleInfiniteVoiceStreamRecognize? = null
+
+    override fun start(langCode: String, onResult: (List<String>) -> Unit) {
+        googleRecognition = GoogleInfiniteVoiceStreamRecognize(onResult)
+        googleRecognition?.start("ru-RU")
+    }
+
+    override fun stop() {
+        googleRecognition?.stop()
+    }
+}
+
+
+class GoogleInfiniteVoiceStreamRecognize(private val onResultCallback: (List<String>) -> Unit) {
     private val STREAMING_LIMIT = 290000 // ~5 minutes
     private val BYTES_PER_BUFFER = 6400 // buffer size in bytes
     private val additionalLanguages = listOf("uk-UA")

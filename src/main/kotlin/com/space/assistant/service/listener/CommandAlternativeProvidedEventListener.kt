@@ -5,7 +5,7 @@ import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
 import com.space.assistant.core.service.EventPublisher
 import com.space.assistant.core.service.JobSearchProvider
-import com.space.assistant.core.service.SpeakService
+import com.space.assistant.core.service.SpeakVoiceService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.context.event.EventListener
@@ -16,7 +16,7 @@ class CommandAlternativeProvidedEventListener(
         private val jobSearchProviders: List<JobSearchProvider>,
         private val activeJobManager: ActiveJobManager,
         private val eventPublisher: EventPublisher,
-        private val speakService: SpeakService) {
+        private val speakVoiceService: SpeakVoiceService) {
 
     @EventListener
     fun handleEvent(event: CommandAlternativeProvidedEvent) {
@@ -32,7 +32,7 @@ class CommandAlternativeProvidedEventListener(
                 eventPublisher.publishEvent(JobProvidedEvent(activeJobInfo))
 
                 if (jobInfo.phraseBefore.isNotEmpty())
-                    speakService.say(jobInfo.phraseBefore.random())
+                    speakVoiceService.say(jobInfo.phraseBefore.random())
 
             }
         }
