@@ -19,11 +19,14 @@ class WinCmdJobRunner : JobRunner {
                 ?: (execInfo as? WinCmdJobExecInfo)?.cmd
                 ?: return null
 
-        withContext(Dispatchers.IO) {
-            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler $command")
+       return withContext(Dispatchers.IO) {
+            val process = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler $command")
+
+            val pid = process.pid()
+
+           JobResult(pid.toString())
         }
 
-        return JobResult("")
     }
 
 }
