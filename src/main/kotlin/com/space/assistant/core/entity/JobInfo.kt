@@ -4,7 +4,7 @@ import com.space.assistant.core.util.simpleID
 
 data class JobInfo(
         val uuid: String = simpleID(),
-        val finderInfo: JobFinderInfo,
+        val activatorInfo: JobActivatorInfo,
         val phraseBefore: List<String>,
         val runnerInfo: JobRunnerInfo,
         val resultParserInfo: JobResultParserInfo,
@@ -12,7 +12,7 @@ data class JobInfo(
         val redirectToJobs: List<String>
 )
 
-interface JobFinderInfo {
+interface JobActivatorInfo {
     val type: String
 }
 

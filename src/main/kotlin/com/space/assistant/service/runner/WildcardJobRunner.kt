@@ -4,7 +4,7 @@ import com.space.assistant.core.entity.ActiveJobInfo
 import com.space.assistant.core.entity.JobRunnerInfo
 import com.space.assistant.core.entity.JobResult
 import com.space.assistant.core.service.JobRunner
-import com.space.assistant.service.search.WildcardJobFinder
+import com.space.assistant.service.search.WildcardJobActivator
 import org.springframework.stereotype.Service
 
 @Service
@@ -30,8 +30,8 @@ class WildcardJobRunner : JobRunner {
                 ?: activeJobInfo.commandAlternativeSucceed?.alternativePhrase?.joinToString(" ")
                 ?: return null
 
-        val wildcardSearchText = (activeJobInfo.jobInfo.finderInfo
-                as? WildcardJobFinder.Info)?.text ?: ""
+        val wildcardSearchText = (activeJobInfo.jobInfo.activatorInfo
+                as? WildcardJobActivator.Info)?.text ?: ""
         val wildcardPattern = execInfo.wildcardText.ifEmpty { wildcardSearchText }
         val wildcardRegex = wildcardPattern
                 .map { it.escapeForRegexp() }
