@@ -11,6 +11,6 @@ class CommandResource(
 ) {
     @GetMapping("command/{text}")
     fun handleCommand(@PathVariable text: String) {
-        activeJobManager.tryNewJob(text)
+        activeJobManager.activateJob(text)
     }
 }

@@ -26,7 +26,7 @@ class WildcardJobActivator(
         if (phrase.isEmpty()) return null
         val phraseText = phrase.joinToString(" ")
 
-        val allWildcardJobs = jobRepository.findJobsBySearchType(typeName)
+        val allWildcardJobs = jobRepository.findJobsByActivatorType(typeName)
 
         for (job in allWildcardJobs) {
             if (job.activatorInfo is Info) {

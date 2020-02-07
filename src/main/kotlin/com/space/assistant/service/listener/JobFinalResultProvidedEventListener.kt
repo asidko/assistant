@@ -24,7 +24,7 @@ class JobFinalResultProvidedEventListener(
 
         sayPostExecPhrase(activeJobInfo)
 
-        activeJobManager.tryNextJob(activeJobInfo)
+        activeJobManager.activateNextJob(activeJobInfo)
     }
 
     private fun sayPostExecPhrase(activeJobInfo: ActiveJobInfo) {

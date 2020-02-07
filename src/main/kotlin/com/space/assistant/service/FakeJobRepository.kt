@@ -6,6 +6,7 @@ import com.space.assistant.core.service.JobRepository
 import com.space.assistant.service.parser.EmptyJobResultParser
 import com.space.assistant.service.parser.JsonPathJobResultParser
 import com.space.assistant.service.runner.*
+import com.space.assistant.service.search.CronJobActivator
 import com.space.assistant.service.search.DirectMatchJobActivator
 import com.space.assistant.service.search.EmptyJobFinderActivator
 import com.space.assistant.service.search.WildcardJobActivator
@@ -25,19 +26,19 @@ class FakeJobRepository : JobRepository {
         return jobs.find { it.uuid == uuid }
     }
 
-    override fun findJobsBySearchType(searchType: String): List<JobInfo> {
-        return jobs.filter { it.activatorInfo.type == searchType }
+    override fun findJobsByActivatorType(activatorType: String): List<JobInfo> {
+        return jobs.filter { it.activatorInfo.type == activatorType }
     }
 
     private val jobs = listOf(
             JobInfo(
-                    uuid = "SAY_HELLO",
-                    activatorInfo = DirectMatchJobActivator.Info(texts = listOf("hello")),
-                    phraseBefore = listOf("выполняю"),
-                    runnerInfo = JustSayJobRunner.Info(text = "Hello world"),
+                    uuid = "TEST",
+                    activatorInfo = DirectMatchJobActivator.Info(texts = listOf("прием", "прийом", "чуєш", "ти чуєш", "ты тут", "ты здесь", "слышишь", "ты слышишь")),
+                    phraseBefore = listOf("Слышу вас", "Я здесь", "Я наместе", "Все нормально", "Да-да", "Работаю"),
+                    runnerInfo = EmptyJobRunner.Info(),
                     resultParserInfo = EmptyJobResultParser.Info(),
-                    redirectToJobs = listOf(),
-                    phraseAfter = listOf()
+                    phraseAfter = listOf(),
+                    redirectToJobs = listOf()
             ),
             JobInfo(
                     uuid = "SAY_TEXT",
@@ -105,15 +106,14 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = listOf()
             ),
             JobInfo(
-                    uuid = "TEST",
-                    activatorInfo = DirectMatchJobActivator.Info(texts = listOf("прием", "прийом", "чуєш", "ти чуєш", "ты тут", "ты здесь", "слышишь", "ты слышишь")),
-                    phraseBefore = listOf("Слышу вас", "Я здесь", "Я наместе", "Все нормально", "Да-да", "Работаю"),
-                    runnerInfo = EmptyJobRunner.Info(),
+                    uuid = "MORNING_WEATHER",
+                    activatorInfo = CronJobActivator.Info(cron = "00 56 12 * * *"),
+                    phraseBefore = listOf(),
+                    runnerInfo = JustSayJobRunner.Info(text = "Добрый вечер"),
                     resultParserInfo = EmptyJobResultParser.Info(),
                     phraseAfter = listOf(),
                     redirectToJobs = listOf()
             )
-
     )
 
 }

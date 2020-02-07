@@ -1,9 +1,6 @@
 package com.space.assistant.service
 
-import com.space.assistant.core.entity.ActiveJobInfo
-import com.space.assistant.core.entity.InputCommand
-import com.space.assistant.core.entity.fromText
-import com.space.assistant.core.entity.fromTexts
+import com.space.assistant.core.entity.*
 import com.space.assistant.core.event.JobProvidedEvent
 import com.space.assistant.core.event.NewCommandProvidedEvent
 import com.space.assistant.core.service.ActiveJobManager
@@ -25,33 +22,49 @@ class ActiveJobManagerImpl(
         ActiveJobRepository by activeJobRepository {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    override fun tryNewJob(text: String) {
-        val command = InputCommand.fromText(text)
-
-        val filtered = filter.apply(command)
-        filtered ?: log.debug("Command with text {} was filtered out", text)
-        filtered ?: return
-
-        val activeJob = registerActiveJob(command)
-
-        eventPublisher.publishEvent(NewCommandProvidedEvent(activeJob))
+    override fun activateJob(text: String) {
+        val inputCommand = InputCommand.fromText(text)
+        applyFilterAndRegister(inputCommand)
     }
 
-    override fun tryNewJobs(texts: List<String>) {
+    override fun activateJob(jobInfo: JobInfo) {
+        val activeJobInfo = ActiveJobInfo(
+                uuid = simpleID(),
+                jobInfo = jobInfo
+        )
+
+        saveActiveJob(activeJobInfo)
+
+        val event = JobProvidedEvent(activeJobInfo)
+
+        eventPublisher.publishEvent(event)
+    }
+
+    override fun activateJob(texts: List<String>) {
         if (texts.isEmpty()) return
-        if (texts.size == 1) tryNewJob(texts.first())
-        val command = InputCommand.fromTexts(texts)
+        if (texts.size == 1) activateJob(texts.first())
+        val inputCommand = InputCommand.fromTexts(texts)
 
-        val filtered = filter.apply(command)
-        filtered ?: log.debug("Command with texts {} was filtered out", command.toString())
-        filtered ?: return
-
-        val activeJob = registerActiveJob(command)
-
-        eventPublisher.publishEvent(NewCommandProvidedEvent(activeJob))
+        applyFilterAndRegister(inputCommand)
     }
 
-    override fun tryNextJob(currentActiveJobInfo: ActiveJobInfo) {
+    private fun applyFilterAndRegister(inputCommand: InputCommand) {
+        val filtered = filter.apply(inputCommand)
+        filtered ?: log.debug("Command {} was filtered out", inputCommand.toString())
+        filtered ?: return
+
+        val activeJobInfo = ActiveJobInfo(
+                uuid = simpleID(),
+                inputCommand = inputCommand
+        )
+
+        val activeJob = saveActiveJob(activeJobInfo)
+        val event = NewCommandProvidedEvent(activeJob)
+
+        eventPublisher.publishEvent(event)
+    }
+
+    override fun activateNextJob(currentActiveJobInfo: ActiveJobInfo) {
         val currentNextJobs = currentActiveJobInfo.nexJobs
         val nextJobsFromJobInfo = currentActiveJobInfo.jobInfo?.redirectToJobs ?: emptyList()
         val allNextJobs = nextJobsFromJobInfo + currentNextJobs
@@ -80,14 +93,5 @@ class ActiveJobManagerImpl(
 
         val event = JobProvidedEvent(nextActiveJobInfo)
         eventPublisher.publishEvent(event)
-    }
-
-    override fun registerActiveJob(command: InputCommand): ActiveJobInfo {
-        val activeJobInfo = ActiveJobInfo(
-                uuid = simpleID(),
-                inputCommand = command
-        )
-
-        return saveActiveJob(activeJobInfo)
     }
 }
