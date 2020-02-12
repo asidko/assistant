@@ -17,6 +17,8 @@ repositories {
 
 dependencies {
 	// Custom libs /////////////////////////////////////////////
+	// OkHttp
+	implementation("com.squareup.okhttp3:okhttp")
 	// Sphinx
 	implementation("net.sf.phat:sphinx4-core:5prealpha")
 	implementation("net.sf.phat:sphinx4-data:5prealpha")

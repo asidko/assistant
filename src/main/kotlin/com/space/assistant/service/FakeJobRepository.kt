@@ -4,6 +4,7 @@ import com.space.assistant.core.entity.JobInfo
 import com.space.assistant.core.entity.JobPhrase
 import com.space.assistant.core.entity.Phrase
 import com.space.assistant.core.service.JobRepository
+import com.space.assistant.extra.weather.WeatherJobRunner
 import com.space.assistant.service.parser.EmptyJobResultParser
 import com.space.assistant.service.parser.JsonPathJobResultParser
 import com.space.assistant.service.runner.*
@@ -41,7 +42,7 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = listOf()
             ),
             JobInfo(
-                    uuid = "SAY_TEXT",
+                    uuid = "SAY",
                     activatorInfo = EmptyJobFinderActivator.Info(),
                     phrase = JobPhrase(before= listOf(), after = listOf()),
                     runnerInfo = JustSayJobRunner.Info(text = ""),
@@ -50,13 +51,13 @@ class FakeJobRepository : JobRepository {
             ),
             JobInfo(
                     uuid = "SAY_WEATHER",
-                    activatorInfo = DirectMatchJobActivator.Info(texts = listOf("погода")),
+                    activatorInfo = DirectMatchJobActivator.Info(texts = listOf("температура")),
                     phrase = JobPhrase(before= listOf("уточняю температуру", "секундочку", "смотрю"), after = listOf()),
                     runnerInfo = RequestJobRunner.Info(url = "https://www.metaweather.com/api/location/924938/"),
                     resultParserInfo = JsonPathJobResultParser.Info(
                             jsonPathValues = listOf("\$.consolidated_weather[0].the_temp"),
                             resultFormatString = "Текущая температура $1 градусов"),
-                    redirectToJobs = listOf("SAY_TEXT")
+                    redirectToJobs = listOf("SAY")
             ),
             JobInfo(
                     uuid = "RADIO",
@@ -64,7 +65,7 @@ class FakeJobRepository : JobRepository {
                     phrase = JobPhrase(before= listOf("включаю", "открываю", "запускаю", "сейчас будет"), after = listOf()),
                     runnerInfo = WinCmdJobRunner.Info(cmd = "http://www.hitfm.ua/player/"),
                     resultParserInfo = EmptyJobResultParser.Info(),
-                    redirectToJobs = listOf("SAY_TEXT")
+                    redirectToJobs = listOf("SAY")
             ),
             JobInfo(
                     uuid = "RADIO_OFF",
@@ -99,12 +100,20 @@ class FakeJobRepository : JobRepository {
                     redirectToJobs = listOf()
             ),
             JobInfo(
-                    uuid = "MORNING_WEATHER",
-                    activatorInfo = CronJobActivator.Info(cron = "00 56 12 * * *"),
+                    uuid = "GREETING",
+                    activatorInfo = CronJobActivator.Info(cron = "00 00 7 * * *"),
                     phrase = JobPhrase(before= listOf(), after = listOf()),
-                    runnerInfo = JustSayJobRunner.Info(text = "Добрый вечер"),
+                    runnerInfo = JustSayJobRunner.Info(text = "Доброе утро"),
                     resultParserInfo = EmptyJobResultParser.Info(),
                     redirectToJobs = listOf()
+            ),
+            JobInfo(
+                    uuid = "WEATHER",
+                    activatorInfo = DirectMatchJobActivator.Info(texts = listOf("погода")),
+                    phrase = JobPhrase(before= listOf(), after = listOf()),
+                    runnerInfo = WeatherJobRunner.Info(),
+                    resultParserInfo = EmptyJobResultParser.Info(),
+                    redirectToJobs = listOf("SAY")
             )
     )
 
